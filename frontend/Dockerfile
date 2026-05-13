@@ -5,7 +5,7 @@ WORKDIR /app
 ENV NODE_ENV=development
 
 COPY package*.json ./
-
+RUN npm install typescript
 RUN npm install --include=dev --no-audit --no-fund
 
 COPY . .
