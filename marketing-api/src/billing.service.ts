@@ -73,19 +73,28 @@ export class BillingService {
   async notifyCheckoutResult(sessionId: string, result: 'success' | 'cancel') {
     const stripe = this.assertStripe();
     this.logger.log(`[CHECKOUT_RESULT][START] session=${sessionId} result=${result}`);
+
+    // Questo endpoint è chiamato dal frontend solo per mostrare il banner.
+    // Non deve fare provisioning azienda e non deve inviare mail, altrimenti il browser può ricevere 504.
+    // Le operazioni post-pagamento vengono gestite dal webhook Stripe in modalità asincrona.
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const response = {
+      status: result === 'success' && (session.status === 'complete' || session.payment_status === 'paid') ? 'success' : result,
+      message:
+        result === 'success'
+          ? 'Pagamento ricevuto. Attivazione azienda e notifiche vengono gestite dal webhook Stripe.'
+          : 'Pagamento non completato o annullato.',
+      stripe: {
+        sessionId: session.id,
+        sessionStatus: session.status,
+        paymentStatus: session.payment_status,
+      },
+    };
 
-    if (result === 'success') {
-      if (session.status !== 'complete' && session.payment_status !== 'paid') {
-        this.logger.warn(`[CHECKOUT_RESULT][PENDING] session=${sessionId} status=${session.status} payment_status=${session.payment_status}`);
-        return { status: 'pending', message: 'Pagamento non ancora confermato da Stripe.' };
-      }
-      const details = await this.handleCheckoutCompleted(session);
-      return { status: 'success', message: 'Pagamento completato correttamente.', details };
-    }
-
-    const details = await this.handleCheckoutCancelled(session);
-    return { status: 'cancel', message: 'Pagamento non completato.', details };
+    this.logger.log(
+      `[CHECKOUT_RESULT][FAST_OK] session=${session.id} result=${result} status=${session.status} payment_status=${session.payment_status}`,
+    );
+    return response;
   }
 
   async handleStripeEvent(event: Stripe.Event) {

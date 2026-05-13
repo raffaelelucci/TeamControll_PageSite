@@ -31,6 +31,9 @@ export class MailService {
       port: smtp.port,
       secure: smtp.secure,
       auth: smtp.user ? { user: smtp.user, pass: smtp.pass || '' } : undefined,
+      connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT_MS || 10000),
+      greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT_MS || 10000),
+      socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT_MS || 15000),
     });
   }
 

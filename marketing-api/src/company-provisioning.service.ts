@@ -62,11 +62,16 @@ export class CompanyProvisioningService {
     }
 
     try {
-      const response = await fetch(url, {
-        method: this.companyCreateMethod(),
-        headers,
-        body: JSON.stringify(payload),
-      });
+      const response = await this.fetchWithTimeout(
+        url,
+        {
+          method: this.companyCreateMethod(),
+          headers,
+          body: JSON.stringify(payload),
+        },
+        this.requestTimeoutMs(),
+        '[PROVISIONING][CREATE]',
+      );
 
       const text = await response.text();
       let body: unknown = text;
@@ -127,11 +132,16 @@ export class CompanyProvisioningService {
     this.logger.log(`[PROVISIONING][AUTH][LOGIN][START] url=${loginUrl} username=${username}`);
 
     try {
-      const response = await fetch(loginUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await this.fetchWithTimeout(
+        loginUrl,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        },
+        this.requestTimeoutMs(),
+        '[PROVISIONING][AUTH][LOGIN]',
+      );
       const text = await response.text();
       let body: any = {};
       try {
@@ -188,6 +198,30 @@ export class CompanyProvisioningService {
       business: { maxUsers: 50, maxProjects: 200, maxStorageMb: 20480 },
     };
     return map[plan] || map.team;
+  }
+
+
+  private requestTimeoutMs() {
+    const parsed = Number(process.env.APP_PROVISIONING_TIMEOUT_MS || 10000);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 10000;
+  }
+
+  private async fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number, label: string) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    const started = Date.now();
+    try {
+      this.logger.log(`${label}[HTTP][START] url=${url} timeoutMs=${timeoutMs}`);
+      const response = await fetch(url, { ...init, signal: controller.signal });
+      this.logger.log(`${label}[HTTP][END] status=${response.status} durationMs=${Date.now() - started}`);
+      return response;
+    } catch (error: any) {
+      const message = error?.name === 'AbortError' ? `Timeout dopo ${timeoutMs}ms` : error?.message || String(error);
+      this.logger.error(`${label}[HTTP][ERROR] durationMs=${Date.now() - started} error=${message}`, error?.stack);
+      throw new Error(message);
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
   private truncate(value: string, max = 1200) {

@@ -39,7 +39,7 @@ export class BillingController {
   }
 
   @Post('webhook')
-  async webhook(@Req() req: any, @Headers('stripe-signature') sig?: string) {
+  webhook(@Req() req: any, @Headers('stripe-signature') sig?: string) {
     const secret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!secret || !sig) {
       this.logger.warn('[STRIPE_WEBHOOK][SKIP] Webhook secret o firma assenti');
@@ -50,7 +50,13 @@ export class BillingController {
     const raw = req.rawBody;
     this.logger.log(`[STRIPE_WEBHOOK][RECEIVED] rawBody=${raw ? 'yes' : 'no'} signature=yes`);
     const event = stripe.webhooks.constructEvent(raw, sig, secret);
-    await this.billing.handleStripeEvent(event);
-    return { received: true };
+
+    // Importante: rispondiamo subito a Stripe. Provisioning azienda e mail girano asincroni
+    // con log dedicati, così nginx/Stripe non vanno in timeout se l'altro progetto o SMTP sono lenti.
+    this.billing.handleStripeEvent(event).catch((error: any) => {
+      this.logger.error(`[STRIPE_WEBHOOK][ASYNC_KO] event=${event.id} type=${event.type} error=${error?.message || error}`, error?.stack);
+    });
+
+    return { received: true, queued: true, eventId: event.id, eventType: event.type };
   }
 }

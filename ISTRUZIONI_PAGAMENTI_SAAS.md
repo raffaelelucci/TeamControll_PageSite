@@ -1,22 +1,24 @@
 # Pagamenti Stripe + attivazione azienda SaaS
 
-Questa versione fa partire il pagamento solo dopo la compilazione dei dati azienda. I dati vengono salvati nei metadata della sessione Stripe e, quando il pagamento va a buon fine, la marketing API prova a creare l'azienda attiva nell'app SaaS.
+Questa versione fa partire il pagamento solo dopo la compilazione dei dati azienda. I dati vengono salvati nei metadata della sessione Stripe e, quando Stripe conferma il pagamento tramite webhook, la marketing API prova a creare l'azienda attiva nell'app SaaS.
 
-## Flusso
+## Flusso corretto
 
 1. L'utente seleziona un piano. Di default è selezionato **Team - 79€/mese**, indicato come piano più scelto.
 2. L'utente compila i dati azienda.
 3. La marketing API crea una sessione Stripe Checkout.
 4. Stripe rimanda a `/prezzi?checkout=success&session_id=...` oppure `/prezzi?checkout=cancel&session_id=...`.
-5. Il frontend mostra il banner di esito.
-6. Il backend `/api/billing/checkout-result` verifica la sessione Stripe.
-7. In caso di successo:
-   - crea l'azienda attiva nel SaaS chiamando `/api/companies`;
-   - invia la mail al cliente;
-   - invia la mail interna alla tua casella configurata.
-8. In caso di annullamento/fallimento:
+5. Il frontend mostra subito il banner di esito.
+6. Il backend `/api/billing/checkout-result` verifica solo lo stato della sessione Stripe e risponde velocemente: non crea aziende e non invia mail.
+7. Il webhook Stripe `/api/billing/webhook` riceve `checkout.session.completed` e avvia in asincrono:
+   - creazione azienda attiva nel SaaS chiamando `/api/companies`;
+   - mail di successo al cliente;
+   - mail interna alla tua casella configurata.
+8. In caso di annullamento/fallimento gestito da webhook:
    - invia la mail al cliente, se disponibile;
    - invia la mail interna.
+
+Questa separazione evita il `504 Gateway Time-out` su `/checkout-result`: il ritorno del browser non aspetta più né l'altro progetto né SMTP.
 
 ## Variabili obbligatorie Stripe
 
@@ -40,6 +42,9 @@ SMTP_USER=la-tua-mail@example.com
 SMTP_PASS=password-o-app-password
 MAIL_FROM="Team Control Center <la-tua-mail@example.com>"
 INTERNAL_PAYMENT_EMAIL=la-tua-mail@example.com
+SMTP_CONNECTION_TIMEOUT_MS=10000
+SMTP_GREETING_TIMEOUT_MS=10000
+SMTP_SOCKET_TIMEOUT_MS=15000
 ```
 
 Se `INTERNAL_PAYMENT_EMAIL` è vuota, la notifica interna usa `SALES_TO_EMAIL`; se manca anche quella, usa `SMTP_USER`.
@@ -57,6 +62,7 @@ APP_COMPANY_CREATE_METHOD=POST
 APP_AUTH_LOGIN_URL=https://api.teamcontrolcenter.it/api/auth/login
 APP_ADMIN_USERNAME=utente_super_admin
 APP_ADMIN_PASSWORD=password_super_admin
+APP_PROVISIONING_TIMEOUT_MS=10000
 ```
 
 In alternativa puoi passare direttamente un token Bearer:
@@ -72,12 +78,18 @@ Nei log Nest vedrai tag chiari:
 ```text
 [CHECKOUT][START]
 [CHECKOUT][OK]
-[CHECKOUT_RESULT][START]
+[CHECKOUT_RESULT][FAST_OK]
+[STRIPE_WEBHOOK][RECEIVED]
 [STRIPE_WEBHOOK][EVENT]
+[STRIPE_WEBHOOK][ASYNC_KO]
 [PAYMENT_SUCCESS][START]
 [PAYMENT_SUCCESS][END]
 [PROVISIONING][START]
+[PROVISIONING][AUTH][LOGIN][HTTP][START]
+[PROVISIONING][AUTH][LOGIN][HTTP][END]
 [PROVISIONING][AUTH][LOGIN][OK]
+[PROVISIONING][CREATE][HTTP][START]
+[PROVISIONING][CREATE][HTTP][END]
 [PROVISIONING][OK]
 [PROVISIONING][KO]
 [MAIL][START]
@@ -89,4 +101,4 @@ Così capiamo subito se fallisce Stripe, SMTP, login verso SaaS o creazione azie
 
 ## Nota importante
 
-Le email e la creazione azienda non fanno più esplodere il checkout con un 500 generico: gli errori vengono loggati e restituiti nei dettagli di `/api/billing/checkout-result`, così puoi debuggare senza rompere il ritorno dal pagamento.
+Il webhook risponde subito a Stripe e continua il lavoro in asincrono. Se l'altro progetto o SMTP sono lenti, non bloccano più nginx e non causano più il 504 sul browser.
