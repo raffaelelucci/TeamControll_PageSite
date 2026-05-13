@@ -12,7 +12,7 @@ export class MailService {
       auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined,
     });
   }
-  async sendInternalLead(subject: string, payload: Record<string, unknown>) {
+  async sendInternalLead(subject: string, payload: unknown) {
     const to = process.env.SALES_TO_EMAIL;
     if (!to) { this.logger.warn('SALES_TO_EMAIL non configurata'); return; }
     const html = `<h2>${subject}</h2><pre style="font-family:Inter,Arial,sans-serif;background:#f8fafc;padding:16px;border-radius:12px">${JSON.stringify(payload, null, 2)}</pre>`;
