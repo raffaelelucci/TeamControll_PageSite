@@ -1,16 +1,36 @@
 import { Injectable, Logger } from '@nestjs/common';
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
 
+  private smtpConfig() {
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT || 587);
+    const secure = String(process.env.SMTP_SECURE || 'false') === 'true';
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+
+    return { host, port, secure, user, pass };
+  }
+
   private transporter() {
+    const smtp = this.smtpConfig();
+
+    if (!smtp.host) {
+      throw new Error('SMTP_HOST non configurato');
+    }
+
+    this.logger.log(
+      `Creo transporter SMTP host=${smtp.host} port=${smtp.port} secure=${smtp.secure} auth=${smtp.user ? 'yes' : 'no'}`,
+    );
+
     return nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: String(process.env.SMTP_SECURE || 'false') === 'true',
-      auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined,
+      host: smtp.host,
+      port: smtp.port,
+      secure: smtp.secure,
+      auth: smtp.user ? { user: smtp.user, pass: smtp.pass || '' } : undefined,
     });
   }
 
@@ -22,22 +42,41 @@ export class MailService {
     return process.env.INTERNAL_PAYMENT_EMAIL || process.env.SALES_TO_EMAIL || process.env.SMTP_USER;
   }
 
+  async safeSend(label: string, fn: () => Promise<void>) {
+    try {
+      await fn();
+      this.logger.log(`[MAIL][OK] ${label}`);
+      return { ok: true, label };
+    } catch (error: any) {
+      this.logger.error(`[MAIL][KO] ${label}: ${error?.message || error}`, error?.stack);
+      return { ok: false, label, error: error?.message || String(error) };
+    }
+  }
+
   async sendInternalLead(subject: string, payload: object) {
     const to = this.internalTo();
-    if (!to) { this.logger.warn('Nessuna mail interna configurata: imposta INTERNAL_PAYMENT_EMAIL, SALES_TO_EMAIL o SMTP_USER'); return; }
-    const html = `<h2>${subject}</h2><pre style="font-family:Inter,Arial,sans-serif;background:#f8fafc;padding:16px;border-radius:12px;white-space:pre-wrap">${JSON.stringify(payload, null, 2)}</pre>`;
+    if (!to) {
+      this.logger.warn('Nessuna mail interna configurata: imposta INTERNAL_PAYMENT_EMAIL, SALES_TO_EMAIL o SMTP_USER');
+      return;
+    }
+
+    this.logger.log(`[MAIL][START] Invio mail interna to=${this.maskEmail(to)} subject="${subject}"`);
+    const html = `<h2>${this.escape(subject)}</h2><pre style="font-family:Inter,Arial,sans-serif;background:#f8fafc;padding:16px;border-radius:12px;white-space:pre-wrap">${this.escape(JSON.stringify(payload, null, 2))}</pre>`;
     await this.transporter().sendMail({ from: this.from(), to, subject, html });
   }
 
   async sendCustomerAck(to: string, name: string) {
+    this.logger.log(`[MAIL][START] Invio ack cliente to=${this.maskEmail(to)}`);
     await this.transporter().sendMail({
-      from: this.from(), to,
+      from: this.from(),
+      to,
       subject: 'Richiesta ricevuta - Team Control Center',
-      html: `<p>Ciao ${this.escape(name)},</p><p>abbiamo ricevuto la tua richiesta. Ti contatteremo per configurare la prova o l’abbonamento aziendale.</p><p>Team Control Center</p>`
+      html: `<p>Ciao ${this.escape(name)},</p><p>abbiamo ricevuto la tua richiesta. Ti contatteremo per configurare la prova o l’abbonamento aziendale.</p><p>Team Control Center</p>`,
     });
   }
 
   async sendPaymentSuccessCustomer(to: string, data: Record<string, unknown>) {
+    this.logger.log(`[MAIL][START] Invio pagamento riuscito cliente to=${this.maskEmail(to)} session=${data.stripeSessionId || ''}`);
     await this.transporter().sendMail({
       from: this.from(),
       to,
@@ -54,6 +93,7 @@ export class MailService {
   }
 
   async sendPaymentFailureCustomer(to: string, data: Record<string, unknown>) {
+    this.logger.log(`[MAIL][START] Invio pagamento non riuscito cliente to=${this.maskEmail(to)} session=${data.stripeSessionId || ''}`);
     await this.transporter().sendMail({
       from: this.from(),
       to,
@@ -69,14 +109,20 @@ export class MailService {
   }
 
   async sendPaymentSuccessInternal(data: Record<string, unknown>) {
-    await this.sendInternalLead('Pagamento completato e azienda da attivare', data);
+    await this.sendInternalLead('Pagamento completato - azienda creata/da verificare', data);
   }
 
   async sendPaymentFailureInternal(data: Record<string, unknown>) {
     await this.sendInternalLead('Pagamento non completato / fallito', data);
   }
 
+  private maskEmail(value: string) {
+    const [name, domain] = String(value || '').split('@');
+    if (!domain) return value;
+    return `${name.slice(0, 2)}***@${domain}`;
+  }
+
   private escape(value: string) {
-    return value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char] || char));
+    return String(value || '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char] || char));
   }
 }

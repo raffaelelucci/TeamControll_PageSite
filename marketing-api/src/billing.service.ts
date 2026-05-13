@@ -52,6 +52,8 @@ export class BillingService {
     const base = process.env.PUBLIC_SITE_URL || 'https://teamcontrolcenter.it';
     const metadata = this.toMetadata(dto);
 
+    this.logger.log(`[CHECKOUT][START] plan=${dto.plan} company=${dto.companyName} vat=${dto.vatNumber} email=${this.maskEmail(dto.email)} price=${price}`);
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer_email: dto.email,
@@ -64,26 +66,30 @@ export class BillingService {
       allow_promotion_codes: true,
     });
 
-    return { url: session.url };
+    this.logger.log(`[CHECKOUT][OK] session=${session.id} url=${session.url ? 'created' : 'missing'}`);
+    return { url: session.url, sessionId: session.id };
   }
 
   async notifyCheckoutResult(sessionId: string, result: 'success' | 'cancel') {
     const stripe = this.assertStripe();
+    this.logger.log(`[CHECKOUT_RESULT][START] session=${sessionId} result=${result}`);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (result === 'success') {
       if (session.status !== 'complete' && session.payment_status !== 'paid') {
+        this.logger.warn(`[CHECKOUT_RESULT][PENDING] session=${sessionId} status=${session.status} payment_status=${session.payment_status}`);
         return { status: 'pending', message: 'Pagamento non ancora confermato da Stripe.' };
       }
-      await this.handleCheckoutCompleted(session);
-      return { status: 'success', message: 'Pagamento completato correttamente.' };
+      const details = await this.handleCheckoutCompleted(session);
+      return { status: 'success', message: 'Pagamento completato correttamente.', details };
     }
 
-    await this.handleCheckoutCancelled(session);
-    return { status: 'cancel', message: 'Pagamento non completato.' };
+    const details = await this.handleCheckoutCancelled(session);
+    return { status: 'cancel', message: 'Pagamento non completato.', details };
   }
 
   async handleStripeEvent(event: Stripe.Event) {
+    this.logger.log(`[STRIPE_WEBHOOK][EVENT] type=${event.type} id=${event.id}`);
     switch (event.type) {
       case 'checkout.session.completed':
         await this.handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
@@ -96,6 +102,7 @@ export class BillingService {
         await this.handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
         break;
       default:
+        this.logger.log(`[STRIPE_WEBHOOK][IGNORED] type=${event.type}`);
         break;
     }
   }
@@ -104,15 +111,18 @@ export class BillingService {
     const stripe = this.assertStripe();
     const session = await stripe.checkout.sessions.retrieve(inputSession.id);
     const data = this.fromMetadata(session.metadata || {});
-    const alreadyHandled = session.metadata?.payment_success_notified === 'true' && session.metadata?.company_provisioned === 'true';
-    if (alreadyHandled) return;
-
     const stripeCustomerId = typeof session.customer === 'string' ? session.customer : session.customer?.id;
     const stripeSubscriptionId = typeof session.subscription === 'string' ? session.subscription : session.subscription?.id;
     const email = session.customer_details?.email || data.email;
 
-    let companyProvisioningResult: unknown = { skipped: true };
-    if (session.metadata?.company_provisioned !== 'true') {
+    this.logger.log(
+      `[PAYMENT_SUCCESS][START] session=${session.id} status=${session.status} payment_status=${session.payment_status} company=${data.companyName} email=${this.maskEmail(email)}`,
+    );
+
+    let companyProvisioningResult: any = { skipped: true, reason: 'already provisioned' };
+    if (session.metadata?.company_provisioned === 'true') {
+      this.logger.log(`[PAYMENT_SUCCESS][PROVISIONING][SKIP] session=${session.id} company_provisioned=true`);
+    } else {
       const provisioningPayload: ProvisionCompanyPayload = {
         ...data,
         stripeCustomerId,
@@ -131,24 +141,46 @@ export class BillingService {
       companyProvisioningResult,
     };
 
-    if (email && session.metadata?.payment_success_notified !== 'true') {
-      await this.mail.sendPaymentSuccessCustomer(email, payload);
-      await this.mail.sendPaymentSuccessInternal(payload);
+    const mailResults: Array<unknown> = [];
+    if (session.metadata?.payment_success_notified === 'true') {
+      this.logger.log(`[PAYMENT_SUCCESS][MAIL][SKIP] session=${session.id} payment_success_notified=true`);
+    } else {
+      if (email) {
+        mailResults.push(await this.mail.safeSend('pagamento riuscito cliente', () => this.mail.sendPaymentSuccessCustomer(email, payload)));
+      } else {
+        this.logger.warn(`[PAYMENT_SUCCESS][MAIL][CUSTOMER][SKIP] session=${session.id} email cliente assente`);
+      }
+      mailResults.push(await this.mail.safeSend('pagamento riuscito interno', () => this.mail.sendPaymentSuccessInternal(payload)));
     }
 
-    await stripe.checkout.sessions.update(session.id, {
-      metadata: {
-        ...(session.metadata || {}),
-        payment_success_notified: 'true',
-        company_provisioned: 'true',
-      },
-    });
+    const metadataUpdate: Stripe.MetadataParam = {
+      ...(session.metadata || {}),
+      payment_success_notified: mailResults.some((item: any) => item?.ok) || session.metadata?.payment_success_notified === 'true' ? 'true' : 'false',
+      company_provisioned: companyProvisioningResult?.ok || session.metadata?.company_provisioned === 'true' ? 'true' : 'false',
+      last_payment_success_handled_at: new Date().toISOString(),
+    };
+
+    if (!companyProvisioningResult?.ok) {
+      metadataUpdate.company_provisioning_error = String(companyProvisioningResult?.error || companyProvisioningResult?.reason || 'unknown').slice(0, 450);
+    } else {
+      metadataUpdate.company_provisioning_error = '';
+    }
+
+    await stripe.checkout.sessions.update(session.id, { metadata: metadataUpdate });
+    this.logger.log(`[PAYMENT_SUCCESS][END] session=${session.id} provisioned=${metadataUpdate.company_provisioned} mailNotified=${metadataUpdate.payment_success_notified}`);
+
+    return { companyProvisioningResult, mailResults };
   }
 
   private async handleCheckoutCancelled(inputSession: Stripe.Checkout.Session) {
     const stripe = this.assertStripe();
     const session = await stripe.checkout.sessions.retrieve(inputSession.id);
-    if (session.metadata?.payment_failure_notified === 'true') return;
+    this.logger.log(`[PAYMENT_CANCEL][START] session=${session.id} status=${session.status} payment_status=${session.payment_status}`);
+
+    if (session.metadata?.payment_failure_notified === 'true') {
+      this.logger.log(`[PAYMENT_CANCEL][SKIP] session=${session.id} payment_failure_notified=true`);
+      return { skipped: true, reason: 'already notified' };
+    }
 
     const data = this.fromMetadata(session.metadata || {});
     const email = session.customer_details?.email || data.email;
@@ -159,15 +191,24 @@ export class BillingService {
       status: session.status,
     };
 
-    if (email) await this.mail.sendPaymentFailureCustomer(email, payload);
-    await this.mail.sendPaymentFailureInternal(payload);
+    const mailResults: Array<unknown> = [];
+    if (email) {
+      mailResults.push(await this.mail.safeSend('pagamento non riuscito cliente', () => this.mail.sendPaymentFailureCustomer(email, payload)));
+    } else {
+      this.logger.warn(`[PAYMENT_CANCEL][MAIL][CUSTOMER][SKIP] session=${session.id} email cliente assente`);
+    }
+    mailResults.push(await this.mail.safeSend('pagamento non riuscito interno', () => this.mail.sendPaymentFailureInternal(payload)));
 
     await stripe.checkout.sessions.update(session.id, {
       metadata: {
         ...(session.metadata || {}),
-        payment_failure_notified: 'true',
+        payment_failure_notified: mailResults.some((item: any) => item?.ok) ? 'true' : 'false',
+        last_payment_failure_handled_at: new Date().toISOString(),
       },
     });
+
+    this.logger.log(`[PAYMENT_CANCEL][END] session=${session.id} mailNotified=${mailResults.some((item: any) => item?.ok)}`);
+    return { mailResults };
   }
 
   private async handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
@@ -177,6 +218,8 @@ export class BillingService {
     let email = typeof invoice.customer_email === 'string' ? invoice.customer_email : undefined;
 
     const subscriptionId = typeof invoiceAny.subscription === 'string' ? invoiceAny.subscription : invoiceAny.subscription?.id;
+    this.logger.warn(`[INVOICE_PAYMENT_FAILED][START] invoice=${invoice.id} subscription=${subscriptionId || ''}`);
+
     if (subscriptionId) {
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
       metadata = subscription.metadata || metadata;
@@ -194,8 +237,12 @@ export class BillingService {
       stripeSubscriptionId: subscriptionId,
       invoiceStatus: invoice.status,
     };
-    if (email || data.email) await this.mail.sendPaymentFailureCustomer(email || data.email, payload);
-    await this.mail.sendPaymentFailureInternal(payload);
+    const mailResults: Array<unknown> = [];
+    if (email || data.email) {
+      mailResults.push(await this.mail.safeSend('invoice payment failed cliente', () => this.mail.sendPaymentFailureCustomer(email || data.email, payload)));
+    }
+    mailResults.push(await this.mail.safeSend('invoice payment failed interno', () => this.mail.sendPaymentFailureInternal(payload)));
+    this.logger.warn(`[INVOICE_PAYMENT_FAILED][END] invoice=${invoice.id} mailNotified=${mailResults.some((item: any) => item?.ok)}`);
   }
 
   private toMetadata(dto: CheckoutRequest): Record<string, string> {
@@ -210,12 +257,13 @@ export class BillingService {
       address: dto.address || '',
       city: dto.city || '',
       source: 'marketing-site',
+      created_at: new Date().toISOString(),
     };
   }
 
   private fromMetadata(metadata: Stripe.Metadata | Record<string, string>): ProvisionCompanyPayload {
     return {
-      plan: metadata.plan || 'starter',
+      plan: metadata.plan || 'team',
       companyName: metadata.companyName || 'Azienda senza nome',
       vatNumber: metadata.vatNumber || '',
       contactName: metadata.contactName || '',
@@ -225,5 +273,11 @@ export class BillingService {
       address: metadata.address || undefined,
       city: metadata.city || undefined,
     };
+  }
+
+  private maskEmail(value?: string) {
+    const [name, domain] = String(value || '').split('@');
+    if (!domain) return value || '';
+    return `${name.slice(0, 2)}***@${domain}`;
   }
 }

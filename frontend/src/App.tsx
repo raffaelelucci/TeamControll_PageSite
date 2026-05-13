@@ -102,6 +102,12 @@ async function postJson(url: string, payload: unknown) {
 
 function Header() {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle('menu-open', open);
+    return () => document.body.classList.remove('menu-open');
+  }, [open]);
+
   return (
     <header className="site-header">
       <a className="brand" href="/" aria-label="Team Control Center home">
@@ -128,13 +134,16 @@ function Header() {
         <Menu />
       </button>
       {open && (
-        <div className="mobile-panel" role="dialog" aria-modal="true">
-          <div className="mobile-card">
-            <button className="mobile-close" onClick={() => setOpen(false)} aria-label="Chiudi menu">
-              <X />
-            </button>
+        <div className="mobile-panel" role="dialog" aria-modal="true" aria-label="Menu mobile" onClick={() => setOpen(false)}>
+          <div className="mobile-card" onClick={(event) => event.stopPropagation()}>
+            <div className="mobile-card-head">
+              <strong>Menu</strong>
+              <button className="mobile-close" onClick={() => setOpen(false)} aria-label="Chiudi menu" type="button">
+                <X />
+              </button>
+            </div>
             {[...nav, ...solutionNav, ['https://app.teamcontrolcenter.it', 'Accedi app']].map(([href, label]) => (
-              <a href={href} key={href}>{label}</a>
+              <a href={href} key={href} onClick={() => setOpen(false)}>{label}</a>
             ))}
           </div>
         </div>
@@ -329,7 +338,7 @@ type CheckoutForm = {
 };
 
 function Pricing() {
-  const [selectedPlan, setSelectedPlan] = useState(plans[0]?.key || 'starter');
+  const [selectedPlan, setSelectedPlan] = useState('team');
   const [loading, setLoading] = useState('');
   const [msg, setMsg] = useState('');
   const [banner, setBanner] = useState<{ type: 'success' | 'error'; title: string; text: string } | null>(null);

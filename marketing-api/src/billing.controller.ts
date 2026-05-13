@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Post, Req } from '@nestjs/common';
+import { Body, Controller, Headers, Logger, Post, Req } from '@nestjs/common';
 import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import Stripe from 'stripe';
 import { BillingService } from './billing.service';
@@ -22,25 +22,33 @@ class CheckoutResultDto {
 
 @Controller('api/billing')
 export class BillingController {
+  private readonly logger = new Logger(BillingController.name);
+
   constructor(private readonly billing: BillingService) {}
 
   @Post('create-checkout-session')
   checkout(@Body() dto: CheckoutDto) {
+    this.logger.log(`[HTTP][create-checkout-session] plan=${dto.plan} company=${dto.companyName}`);
     return this.billing.checkout(dto);
   }
 
   @Post('checkout-result')
   checkoutResult(@Body() dto: CheckoutResultDto) {
+    this.logger.log(`[HTTP][checkout-result] session=${dto.sessionId} result=${dto.result}`);
     return this.billing.notifyCheckoutResult(dto.sessionId, dto.result);
   }
 
   @Post('webhook')
   async webhook(@Req() req: any, @Headers('stripe-signature') sig?: string) {
     const secret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!secret || !sig) return { received: true, warning: 'Webhook secret non configurato' };
+    if (!secret || !sig) {
+      this.logger.warn('[STRIPE_WEBHOOK][SKIP] Webhook secret o firma assenti');
+      return { received: true, warning: 'Webhook secret non configurato' };
+    }
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
     const raw = req.rawBody;
+    this.logger.log(`[STRIPE_WEBHOOK][RECEIVED] rawBody=${raw ? 'yes' : 'no'} signature=yes`);
     const event = stripe.webhooks.constructEvent(raw, sig, secret);
     await this.billing.handleStripeEvent(event);
     return { received: true };
