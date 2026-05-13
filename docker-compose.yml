@@ -1,0 +1,22 @@
+services:
+  tcc-marketing-site:
+    build:
+      context: ./frontend
+      args:
+        PUBLIC_SITE_URL: https://teamcontrolcenter.it
+    container_name: tcc-marketing-site
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8088:80"
+    depends_on:
+      - tcc-marketing-api
+
+  tcc-marketing-api:
+    build:
+      context: ./marketing-api
+    container_name: tcc-marketing-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:3090:3090"

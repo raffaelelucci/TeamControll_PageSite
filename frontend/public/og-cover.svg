@@ -1,0 +1,12 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="630" fill="#08111F"/>
+<circle cx="980" cy="90" r="270" fill="#2563EB" opacity=".28"/>
+<circle cx="220" cy="580" r="260" fill="#7C3AED" opacity=".22"/>
+<rect x="72" y="76" width="1056" height="478" rx="42" fill="white" fill-opacity=".06" stroke="white" stroke-opacity=".18"/>
+<text x="116" y="190" fill="white" font-family="Inter,Arial,sans-serif" font-size="76" font-weight="900">Team Control Center</text>
+<text x="116" y="270" fill="#BFDBFE" font-family="Inter,Arial,sans-serif" font-size="38" font-weight="800">Team, presenze, progetti, documenti e chat</text>
+<text x="116" y="345" fill="#CBD5E1" font-family="Inter,Arial,sans-serif" font-size="30">La piattaforma SaaS per aziende che vogliono controllo,</text>
+<text x="116" y="388" fill="#CBD5E1" font-family="Inter,Arial,sans-serif" font-size="30">organizzazione e report operativi in un solo posto.</text>
+<rect x="116" y="448" width="320" height="66" rx="24" fill="#2563EB"/>
+<text x="160" y="491" fill="white" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="900">Prova gratis 14 giorni</text>
+</svg>

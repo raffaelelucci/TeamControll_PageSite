@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sicurezza del servizio | Team Control Center</title>
+    <meta name="description" content="Politica di sicurezza Team Control Center: separazione dati aziendali, ruoli, accessi, backup, log, incident response, vulnerabilità e responsabilità condivisa." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="keywords" content="sicurezza SaaS, sicurezza software aziendale, ruoli e permessi" />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:site_name" content="Team Control Center" />
+    <meta property="og:title" content="Sicurezza del servizio | Team Control Center" />
+    <meta property="og:description" content="Politica di sicurezza Team Control Center: separazione dati aziendali, ruoli, accessi, backup, log, incident response, vulnerabilità e responsabilità condivisa." />
+    <meta property="og:url" content="https://teamcontrolcenter.it/sicurezza" />
+    <meta property="og:image" content="https://teamcontrolcenter.it/og-cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sicurezza del servizio | Team Control Center" />
+    <meta name="twitter:description" content="Politica di sicurezza Team Control Center: separazione dati aziendali, ruoli, accessi, backup, log, incident response, vulnerabilità e responsabilità condivisa." />
+    <meta name="twitter:image" content="https://teamcontrolcenter.it/og-cover.png" />
+    <script type="module" crossorigin src="/assets/index-g0fPShaD.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-D4O3KsHO.css">
+  <link rel="canonical" href="https://teamcontrolcenter.it/sicurezza" />
+<link rel="preload" as="image" href="/og-cover.png" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Team Control Center","url":"https://teamcontrolcenter.it","logo":"https://teamcontrolcenter.it/logo.svg","contactPoint":[{"@type":"ContactPoint","contactType":"sales","email":"info@teamcontrolcenter.it","availableLanguage":["it","en"]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Team Control Center","url":"https://teamcontrolcenter.it","inLanguage":"it-IT","potentialAction":{"@type":"SearchAction","target":"https://teamcontrolcenter.it/blog?search={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://teamcontrolcenter.it/"},{"@type":"ListItem","position":2,"name":"Sicurezza del servizio","item":"https://teamcontrolcenter.it/sicurezza"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Sicurezza del servizio | Team Control Center","description":"Politica di sicurezza Team Control Center: separazione dati aziendali, ruoli, accessi, backup, log, incident response, vulnerabilità e responsabilità condivisa.","url":"https://teamcontrolcenter.it/sicurezza","inLanguage":"it-IT","about":["SaaS","privacy","sicurezza","condizioni di servizio","protezione dati"],"dateModified":"2026-05-13"}</script>
+</head>
+  <body>
+    <div id="root"><main class="static-seo legal-static"><article><p>Sicurezza del servizio | Team Control Center</p><h1>Sicurezza del servizio</h1><p>Questa pagina descrive le misure di sicurezza organizzative e tecniche previste per Team Control Center e chiarisce le responsabilità condivise tra fornitore, clienti aziendali e utenti autorizzati.</p><p><strong>Ultimo aggiornamento:</strong> 13 maggio 2026</p><section><h2>Responsabilità condivisa</h2><p>La sicurezza non dipende solo dal codice: anche configurazione dei ruoli, credenziali, dispositivi degli utenti, dati caricati e processi interni del cliente incidono sul livello reale di protezione.</p></section>
+    <section>
+      <h2>1. Architettura e separazione</h2>
+      <p>La piattaforma è progettata per separare i dati tra aziende e limitare l’accesso in base a ruoli e permessi. Le funzioni operative distinguono superadmin, amministratori aziendali, lead e utenti collaboratori secondo il perimetro configurato.</p><p>L’accesso pubblico al sito marketing è separato dall’applicativo privato e dalle API, con configurazioni dedicate per domini, HTTPS e instradamento.</p>
+    </section>
+    <section>
+      <h2>2. Controllo accessi</h2>
+      <p>Gli utenti devono usare credenziali personali e non condivise. Il Cliente deve revocare tempestivamente gli accessi di personale cessato, collaboratori non più autorizzati o account compromessi.</p><p>Le autorizzazioni devono essere assegnate secondo il principio del minimo privilegio: ogni utente deve avere solo i permessi necessari al proprio ruolo.</p>
+    </section>
+    <section>
+      <h2>3. Protezione tecnica</h2>
+      <p>Le misure includono HTTPS, header di sicurezza, controllo CORS, configurazioni Nginx, logging, backup, restrizione degli accessi amministrativi, gestione segreti tramite variabili d’ambiente e aggiornamento delle dipendenze.</p><p>Le chiavi API, segreti Stripe, credenziali SMTP, token JWT e password database non devono essere inseriti nel codice sorgente né condivisi in chat, ticket o repository pubblici.</p>
+    </section>
+    <section>
+      <h2>4. Log, monitoraggio e incidenti</h2>
+      <p>Il servizio può registrare log tecnici per sicurezza, diagnosi, tracciamento errori, prevenzione abusi e audit. I log devono essere accessibili solo a personale autorizzato e conservati per tempi proporzionati.</p><p>Eventuali incidenti devono essere gestiti con raccolta evidenze, contenimento, analisi, ripristino, comunicazione interna e, quando necessario, notifica al cliente o alle autorità competenti.</p>
+    </section>
+    <section>
+      <h2>5. Backup e continuità</h2>
+      <p>Il Fornitore può eseguire backup tecnici per ridurre il rischio di perdita dati. I backup non sostituiscono l’obbligo del Cliente di esportare e conservare copie dei dati necessari ai propri adempimenti organizzativi, fiscali, lavoristici o amministrativi.</p>
+    </section>
+    <section>
+      <h2>6. Vulnerability disclosure</h2>
+      <p>Segnalazioni di vulnerabilità possono essere inviate a security@teamcontrolcenter.it includendo descrizione, impatto, passaggi di riproduzione e contatti. Non sono autorizzati test distruttivi, accessi a dati di terzi, scansioni aggressive o attività che compromettano disponibilità e riservatezza del servizio.</p>
+    </section>
+    <section>
+      <h2>7. Limiti</h2>
+      <p>Nessun sistema può garantire sicurezza assoluta. Il Fornitore adotta misure proporzionate e ragionevoli, ma non risponde per eventi causati da uso improprio, credenziali compromesse, dispositivi infetti, errata configurazione del Cliente, violazioni di terzi o cause di forza maggiore, salvo responsabilità non limitabile per legge.</p>
+    </section></article></main></div>
+  </body>
+</html>
