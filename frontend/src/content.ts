@@ -586,6 +586,166 @@ export const blogPosts: BlogPost[] = [
     ],
     takeaway: 'Il software giusto è quello che rende il lavoro più chiaro, riduce strumenti sparsi e permette all’azienda di crescere con più controllo.',
     keywords: ['scegliere software SaaS', 'software gestione team', 'software aziendale online']
+  },
+  {
+    slug: 'onboarding-dipendenti-azienda-software-gestionale-team',
+    title: 'Onboarding dipendenti: come rendere più ordinato l’ingresso in azienda',
+    description:
+      'Una guida pratica per organizzare onboarding, documenti, ruoli, comunicazioni e prime attività dei nuovi collaboratori con un gestionale aziendale.',
+    date: '2026-05-13',
+    readTime: '7 min',
+    category: 'Onboarding',
+    author: 'Team Control Center',
+    h1: 'Onboarding dipendenti: come rendere più ordinato l’ingresso in azienda',
+    intro:
+      'L’ingresso di una nuova persona è un momento delicato: documenti, permessi, comunicazioni, attività e referenti devono essere chiari già dai primi giorni.',
+    sections: [
+      { title: 'Il nuovo collaboratore deve sapere dove trovare tutto', text: 'Centralizzare documenti, regole interne, progetti e comunicazioni riduce domande ripetute e rende l’avvio più semplice.' },
+      { title: 'Ruoli e permessi vanno preparati prima', text: 'Un onboarding efficace assegna subito il corretto perimetro di accesso: azienda, team, progetti e funzioni disponibili.' },
+      { title: 'Lo storico aiuta anche chi entra dopo', text: 'Quando note e aggiornamenti restano collegati ai progetti, il nuovo collaboratore può recuperare contesto senza dipendere solo dai colleghi.' }
+    ],
+    takeaway: 'Un onboarding ordinato fa risparmiare tempo a responsabili e nuovi collaboratori, migliorando sicurezza e chiarezza operativa.',
+    keywords: ['onboarding dipendenti', 'gestione nuovi dipendenti', 'software onboarding aziendale']
+  },
+  {
+    slug: 'gestione-ferie-permessi-malattia-dipendenti-online',
+    title: 'Gestione ferie, permessi e malattia online: vantaggi per aziende e team',
+    description:
+      'Come organizzare richieste di ferie, permessi e malattia con un flusso digitale più chiaro, consultabile e utile per amministrazione e responsabili.',
+    date: '2026-05-13',
+    readTime: '6 min',
+    category: 'Presenze',
+    author: 'Team Control Center',
+    h1: 'Gestione ferie, permessi e malattia online: vantaggi per aziende e team',
+    intro:
+      'Ferie, permessi e malattia sono processi quotidiani che sembrano semplici, ma diventano complessi quando sono gestiti tra messaggi, telefonate e fogli separati.',
+    sections: [
+      { title: 'La richiesta deve essere tracciabile', text: 'Ogni richiesta dovrebbe avere data, motivazione, stato e responsabile, così amministrazione e lead possono consultarla senza ricostruzioni.' },
+      { title: 'Il responsabile ha bisogno di una vista chiara', text: 'Sapere chi è assente, quando rientra e quale impatto ha sul team aiuta a pianificare meglio il lavoro.' },
+      { title: 'Lo storico riduce errori amministrativi', text: 'Un archivio ordinato delle richieste facilita controlli interni, report e confronto con consulenti o ufficio paghe.' }
+    ],
+    takeaway: 'Digitalizzare ferie, permessi e malattia rende il processo più trasparente per dipendenti, responsabili e amministrazione.',
+    keywords: ['gestione ferie dipendenti online', 'permessi dipendenti software', 'malattia dipendenti gestione']
+  },
+  {
+    slug: 'software-timbrature-online-smart-working-sede-trasferte',
+    title: 'Software timbrature online per sede, smart working e trasferte',
+    description:
+      'Perché una gestione moderna delle timbrature deve adattarsi a sede, lavoro da remoto, pause, trasferte e consultazione da browser.',
+    date: '2026-05-13',
+    readTime: '6 min',
+    category: 'Timbrature',
+    author: 'Team Control Center',
+    h1: 'Software timbrature online per sede, smart working e trasferte',
+    intro:
+      'Il lavoro non avviene più sempre nello stesso luogo. Per questo la timbratura deve essere semplice da usare, ma anche coerente con regole e responsabilità aziendali.',
+    sections: [
+      { title: 'La timbratura deve seguire il modo reale di lavorare', text: 'Sede, smart working e trasferte richiedono un sistema flessibile, accessibile e leggibile anche da responsabili e amministrazione.' },
+      { title: 'Pause e orari devono restare controllabili', text: 'Non basta registrare ingresso e uscita: spesso servono pause, note operative e storico consultabile.' },
+      { title: 'Il dato deve alimentare report utili', text: 'Le timbrature diventano davvero utili quando possono essere filtrate, esportate e collegate ad assenze o attività.' }
+    ],
+    takeaway: 'Un software di timbrature online aiuta l’azienda a gestire modi di lavoro diversi senza perdere controllo sul dato.',
+    keywords: ['software timbrature online', 'timbrature smart working', 'timbrature dipendenti browser']
+  },
+  {
+    slug: 'gestione-documenti-aziendali-online-progetti-team',
+    title: 'Gestione documenti aziendali online: come collegare file, progetti e team',
+    description:
+      'Come evitare documenti dispersi tra email, chat e cartelle non aggiornate usando un sistema collegato a progetti, persone e ruoli.',
+    date: '2026-05-13',
+    readTime: '6 min',
+    category: 'Documenti',
+    author: 'Team Control Center',
+    h1: 'Gestione documenti aziendali online: come collegare file, progetti e team',
+    intro:
+      'I documenti aziendali perdono valore quando non si sa più quale versione sia corretta, chi la possiede e a quale attività sia collegata.',
+    sections: [
+      { title: 'Il documento deve avere un contesto', text: 'Un file è più utile se è collegato a un progetto, a un team, a una persona o a una richiesta specifica.' },
+      { title: 'La consultazione deve rispettare i ruoli', text: 'Non tutti devono vedere tutto: permessi e separazione per azienda aiutano a proteggere informazioni interne.' },
+      { title: 'Meno allegati significa meno dispersione', text: 'Centralizzare i documenti riduce invii ripetuti, versioni duplicate e difficoltà nel recuperare materiale operativo.' }
+    ],
+    takeaway: 'La gestione documentale diventa efficace quando i file non sono isolati, ma collegati al lavoro quotidiano.',
+    keywords: ['gestione documenti aziendali online', 'documenti progetto', 'software documentale team']
+  },
+  {
+    slug: 'dashboard-aziendale-kpi-team-presenze-progetti',
+    title: 'Dashboard aziendale: quali KPI seguire per team, presenze e progetti',
+    description:
+      'Una dashboard aziendale efficace aiuta a leggere presenze, carichi, progetti e attività senza rincorrere file e aggiornamenti manuali.',
+    date: '2026-05-13',
+    readTime: '7 min',
+    category: 'Dashboard',
+    author: 'Team Control Center',
+    h1: 'Dashboard aziendale: quali KPI seguire per team, presenze e progetti',
+    intro:
+      'Una dashboard non deve essere piena di numeri: deve mostrare le informazioni che servono per capire cosa sta succedendo e dove intervenire.',
+    sections: [
+      { title: 'Presenze e assenze sono indicatori operativi', text: 'Sapere quante persone sono presenti, assenti o impegnate su attività specifiche aiuta a leggere capacità e copertura del team.' },
+      { title: 'I progetti richiedono una vista sintetica', text: 'Responsabili e direzione hanno bisogno di sapere quali progetti sono attivi, quali team sono coinvolti e dove emergono criticità.' },
+      { title: 'I KPI devono nascere da dati aggiornati', text: 'Una dashboard è affidabile solo se le informazioni operative sono raccolte nel sistema e non ricostruite a fine mese.' }
+    ],
+    takeaway: 'Una dashboard aziendale utile trasforma dati quotidiani in segnali semplici da leggere e usare nelle decisioni operative.',
+    keywords: ['dashboard aziendale', 'KPI team', 'report presenze progetti']
+  },
+  {
+    slug: 'gestione-ruoli-company-admin-lead-collaboratori-saas',
+    title: 'Gestione ruoli in un SaaS aziendale: Company Admin, Lead e collaboratori',
+    description:
+      'Perché un gestionale aziendale deve distinguere chiaramente amministratori, lead e collaboratori per proteggere dati e responsabilità.',
+    date: '2026-05-13',
+    readTime: '7 min',
+    category: 'Ruoli e permessi',
+    author: 'Team Control Center',
+    h1: 'Gestione ruoli in un SaaS aziendale: Company Admin, Lead e collaboratori',
+    intro:
+      'La gestione dei ruoli è una delle parti più importanti di un SaaS aziendale: definisce cosa può fare ogni persona e quali informazioni può vedere.',
+    sections: [
+      { title: 'Il Company Admin governa il perimetro aziendale', text: 'L’amministratore aziendale deve poter gestire configurazioni, utenti e dati principali senza accedere al perimetro di altre aziende.' },
+      { title: 'Il Lead coordina un sottoinsieme operativo', text: 'Il lead ha bisogno di vedere team, progetti e dati del proprio gruppo, senza avere necessariamente pieni poteri amministrativi.' },
+      { title: 'Il collaboratore deve avere una vista semplice', text: 'Chi lavora operativamente deve trovare rapidamente presenze, comunicazioni, documenti e attività di propria competenza.' }
+    ],
+    takeaway: 'Ruoli ben progettati rendono il SaaS più sicuro, più comprensibile e più adatto alla crescita di più aziende.',
+    keywords: ['gestione ruoli SaaS', 'Company Admin Lead collaboratori', 'permessi software aziendale']
+  },
+  {
+    slug: 'software-gestionale-pmi-processi-digitali-operativi',
+    title: 'Software gestionale per PMI: digitalizzare processi operativi senza complicare il lavoro',
+    description:
+      'Come una PMI può digitalizzare presenze, documenti, progetti e comunicazioni scegliendo un gestionale semplice e scalabile.',
+    date: '2026-05-13',
+    readTime: '8 min',
+    category: 'PMI',
+    author: 'Team Control Center',
+    h1: 'Software gestionale per PMI: digitalizzare processi operativi senza complicare il lavoro',
+    intro:
+      'Le PMI hanno bisogno di strumenti concreti: non piattaforme pesanti, ma soluzioni che eliminano confusione e rendono più visibili dati e responsabilità.',
+    sections: [
+      { title: 'Digitalizzare non significa aggiungere burocrazia', text: 'Un buon gestionale deve ridurre passaggi manuali, non crearne di nuovi. La semplicità operativa è decisiva.' },
+      { title: 'Il valore nasce dall’integrazione', text: 'Presenze, progetti, documenti e chat sono più utili quando dialogano nello stesso ambiente e non restano strumenti separati.' },
+      { title: 'La scalabilità conta anche nelle piccole aziende', text: 'Anche una PMI può crescere rapidamente: ruoli, report e separazione dati evitano di rifare tutto quando aumentano persone e clienti.' }
+    ],
+    takeaway: 'Per una PMI, il gestionale migliore è quello che rende i processi più ordinati senza rendere il lavoro quotidiano più pesante.',
+    keywords: ['software gestionale PMI', 'digitalizzare processi aziendali', 'gestionale operativo PMI']
+  },
+  {
+    slug: 'controllo-attivita-team-responsabili-lead-report-operativi',
+    title: 'Controllo attività del team: cosa serve davvero a responsabili e lead',
+    description:
+      'Una guida per responsabili e lead che vogliono monitorare attività, persone, documenti e comunicazioni senza micro-management.',
+    date: '2026-05-13',
+    readTime: '6 min',
+    category: 'Leadership operativa',
+    author: 'Team Control Center',
+    h1: 'Controllo attività del team: cosa serve davvero a responsabili e lead',
+    intro:
+      'Controllare un team non significa osservare ogni minuto di lavoro, ma avere informazioni chiare per coordinare, aiutare e prendere decisioni tempestive.',
+    sections: [
+      { title: 'Il lead deve vedere il contesto', text: 'Persone, attività, documenti e comunicazioni devono essere leggibili in un’unica vista, evitando ricerche tra strumenti diversi.' },
+      { title: 'Il controllo sano riduce interruzioni', text: 'Quando le informazioni sono aggiornate, il responsabile chiede meno aggiornamenti manuali e il team lavora con meno distrazioni.' },
+      { title: 'I report devono aiutare, non punire', text: 'Un report operativo serve a capire carichi, criticità e miglioramenti possibili, non a trasformare la gestione in sorveglianza.' }
+    ],
+    takeaway: 'Un buon controllo attività dà visibilità al responsabile e autonomia al team, mantenendo equilibrio tra coordinamento e fiducia.',
+    keywords: ['controllo attività team', 'responsabili lead report', 'gestione team operativa']
   }
 ];
 
