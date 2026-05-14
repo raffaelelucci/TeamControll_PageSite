@@ -143,7 +143,12 @@ function legalStatic(route) {
 
 function staticContent(route, post) {
   if (post) {
-    return `<main class="static-seo"><article><p>${esc(post.category)}</p><h1>${esc(post.title)}</h1><p>${esc(post.description)}</p><p>Articolo del ${esc(post.date)} dedicato a ${esc(post.keywords.join(', '))}.</p><h2>Perché è importante</h2><p>Una gestione aziendale efficace richiede informazioni centralizzate, ruoli chiari, dati separati per azienda e strumenti semplici per presenze, progetti, documenti e report.</p><p><a href="/demo">Richiedi una demo</a> oppure <a href="/prezzi">consulta i prezzi</a>.</p></article></main>`;
+    const sections = Array.isArray(post.sections) ? post.sections : [];
+    const body = sections
+      .map((section) => `<section><h2>${esc(section.title)}</h2><p>${esc(section.text)}</p></section>`)
+      .join('');
+    const takeaway = post.takeaway ? `<section><h2>In sintesi</h2><p>${esc(post.takeaway)}</p></section>` : '';
+    return `<main class="static-seo"><article><p>${esc(post.category)}</p><h1>${esc(post.title)}</h1><p>${esc(post.intro || post.description)}</p><p>Articolo del ${esc(post.date)} dedicato a ${esc(post.keywords.join(', '))}.</p>${body}${takeaway}<p><a href="/demo">Richiedi una demo</a> oppure <a href="/prezzi">consulta i prezzi</a>.</p></article></main>`;
   }
   if (route.path === '/blog') {
     return `<main class="static-seo"><section><h1>${esc(route.title.replace(' | Team Control Center', ''))}</h1><p>${esc(route.description)}</p>${blogPosts.map((item) => `<article><h2><a href="/blog/${item.slug}">${esc(item.title)}</a></h2><p>${esc(item.description)}</p></article>`).join('')}</section></main>`;
