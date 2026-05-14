@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { rawBody: true });
+  const app = await NestFactory.create(AppModule, { bodyParser: true });
   app.use(helmet());
   app.enableCors({ origin: process.env.PUBLIC_SITE_URL || 'https://teamcontrolcenter.it' });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));

@@ -69,29 +69,12 @@ Il pulsante nei piani chiama:
 POST /api/billing/create-checkout-session
 ```
 
-Il backend apre una sessione Stripe Checkout in modalità `subscription`. Prima del checkout il cliente compila i dati aziendali necessari per la futura attivazione. Devi creare su Stripe tre Price ricorrenti e inserirli in `.env`:
+Il backend apre una sessione Stripe Checkout in modalità `subscription`. Devi creare su Stripe tre Price ricorrenti e inserirli in `.env`:
 
 ```env
 STRIPE_PRICE_STARTER=price_xxx
 STRIPE_PRICE_TEAM=price_xxx
 STRIPE_PRICE_BUSINESS=price_xxx
-```
-
-Gli URL Stripe sono impostati su `/prezzi?checkout=success&session_id={CHECKOUT_SESSION_ID}` e `/prezzi?checkout=cancel&session_id={CHECKOUT_SESSION_ID}` così il sito mostra il banner corretto dopo il ritorno da Checkout. Il webhook `/api/billing/webhook` gestisce `checkout.session.completed`, `checkout.session.expired`, `checkout.session.async_payment_failed` e `invoice.payment_failed`.
-
-Quando il pagamento è confermato, la marketing API:
-
-- invia una mail di successo al cliente;
-- invia una mail interna a `INTERNAL_PAYMENT_EMAIL`, oppure `SALES_TO_EMAIL`, oppure `SMTP_USER`;
-- chiama l’API dell’applicativo SaaS per creare l’azienda già attiva con abbonamento collegato.
-
-Configura l’endpoint SaaS così:
-
-```env
-APP_COMPANY_CREATE_URL=https://api.teamcontrolcenter.it/api/companies/public-provisioning
-APP_COMPANY_CREATE_METHOD=POST
-APP_COMPANY_API_TOKEN=eventuale-token-bearer
-APP_COMPANY_API_KEY=eventuale-api-key
 ```
 
 Per il primo lancio puoi lasciare Stripe non configurato: il sito userà il form demo/contatti e invierà la richiesta al team interno.

@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock3,
-  Cookie,
   FileText,
   GraduationCap,
   HelpCircle,
@@ -22,7 +21,6 @@ import {
   Rocket,
   ShieldCheck,
   Sparkles,
-  SlidersHorizontal,
   UsersRound,
   X
 } from 'lucide-react';
@@ -67,152 +65,6 @@ const legalNav = [
   ['/recesso-rimborsi', 'Recesso e rimborsi']
 ];
 
-const GOOGLE_ANALYTICS_ID = 'G-FZPVP3ECSZ';
-const COOKIE_CONSENT_KEY = 'tcc_cookie_consent_v1';
-const COOKIE_LEGACY_KEY = 'tcc_cookie_choice';
-
-const cookieCategories = [
-  {
-    key: 'necessary',
-    title: 'Cookie tecnici necessari',
-    description: 'Servono per far funzionare il sito, ricordare la scelta cookie e proteggere navigazione e moduli. Non possono essere disattivati dal banner.',
-    required: true
-  },
-  {
-    key: 'analytics',
-    title: 'Cookie analytics',
-    description: 'Consentono Google Analytics 4 per misurare visite, pagine viste, sorgenti di traffico e contenuti più utili. Si attivano solo dopo consenso.',
-    required: false
-  },
-  {
-    key: 'marketing',
-    title: 'Cookie marketing e profilazione',
-    description: 'Oggi non sono usati. La preferenza resta disponibile per future campagne, pixel o remarketing, che non verranno caricati senza consenso.',
-    required: false
-  }
-] as const;
-
-type CookieConsent = {
-  necessary: true;
-  analytics: boolean;
-  marketing: boolean;
-  savedAt: string;
-  version: 1;
-};
-
-declare global {
-  interface Window {
-    dataLayer?: unknown[];
-    gtag?: (...args: unknown[]) => void;
-    tccOpenCookiePreferences?: () => void;
-  }
-}
-
-function defaultConsent(): CookieConsent {
-  return { necessary: true, analytics: false, marketing: false, savedAt: new Date().toISOString(), version: 1 };
-}
-
-function readCookieConsent(): CookieConsent | null {
-  try {
-    const raw = localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<CookieConsent>;
-      return {
-        necessary: true,
-        analytics: Boolean(parsed.analytics),
-        marketing: Boolean(parsed.marketing),
-        savedAt: parsed.savedAt || new Date().toISOString(),
-        version: 1
-      };
-    }
-
-    const legacy = localStorage.getItem(COOKIE_LEGACY_KEY);
-    if (legacy) {
-      return {
-        necessary: true,
-        analytics: legacy === 'all',
-        marketing: false,
-        savedAt: new Date().toISOString(),
-        version: 1
-      };
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
-
-function saveCookieConsent(consent: CookieConsent) {
-  localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify({ ...consent, savedAt: new Date().toISOString(), version: 1 }));
-  localStorage.removeItem(COOKIE_LEGACY_KEY);
-}
-
-function deleteCookieAcrossDomains(name: string) {
-  const hostParts = window.location.hostname.split('.');
-  const domains = new Set<string>(['', window.location.hostname]);
-  if (hostParts.length >= 2) domains.add(`.${hostParts.slice(-2).join('.')}`);
-  if (hostParts.length >= 3) domains.add(`.${hostParts.slice(-3).join('.')}`);
-
-  domains.forEach((domain) => {
-    const domainPart = domain ? `; domain=${domain}` : '';
-    document.cookie = `${name}=; Max-Age=0; path=/${domainPart}; SameSite=Lax`;
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domainPart}; SameSite=Lax`;
-  });
-}
-
-function clearAnalyticsCookies() {
-  const names = document.cookie
-    .split(';')
-    .map((item) => item.trim().split('=')[0])
-    .filter(Boolean)
-    .filter((name) => name === '_ga' || name === '_gid' || name === '_gat' || name.startsWith('_ga_') || name.startsWith('_gac_'));
-
-  ['_ga', '_gid', '_gat', `_ga_${GOOGLE_ANALYTICS_ID.replace('G-', '')}`, ...names].forEach(deleteCookieAcrossDomains);
-}
-
-function loadGoogleAnalytics() {
-  if (!GOOGLE_ANALYTICS_ID || document.querySelector(`script[data-tcc-analytics="${GOOGLE_ANALYTICS_ID}"]`)) {
-    return;
-  }
-
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = window.gtag || function gtag(...args: unknown[]){ window.dataLayer?.push(args); };
-  window.gtag('consent', 'default', {
-    analytics_storage: 'granted',
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    functionality_storage: 'granted',
-    security_storage: 'granted'
-  });
-  window.gtag('js', new Date());
-  window.gtag('config', GOOGLE_ANALYTICS_ID, {
-    anonymize_ip: true,
-    send_page_view: false
-  });
-
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
-  script.dataset.tccAnalytics = GOOGLE_ANALYTICS_ID;
-  document.head.appendChild(script);
-}
-
-function applyCookieConsent(consent: CookieConsent, pathname = window.location.pathname) {
-  if (consent.analytics) {
-    loadGoogleAnalytics();
-    window.gtag?.('consent', 'update', { analytics_storage: 'granted' });
-    window.gtag?.('event', 'page_view', {
-      page_title: document.title,
-      page_path: pathname,
-      page_location: window.location.href
-    });
-  } else {
-    window.gtag?.('consent', 'update', { analytics_storage: 'denied' });
-    clearAnalyticsCookies();
-  }
-}
-
 function normalizedPath() {
   return window.location.pathname.replace(/\/$/, '') || '/';
 }
@@ -250,12 +102,6 @@ async function postJson(url: string, payload: unknown) {
 
 function Header() {
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    document.body.classList.toggle('menu-open', open);
-    return () => document.body.classList.remove('menu-open');
-  }, [open]);
-
   return (
     <header className="site-header">
       <a className="brand" href="/" aria-label="Team Control Center home">
@@ -282,16 +128,13 @@ function Header() {
         <Menu />
       </button>
       {open && (
-        <div className="mobile-panel" role="dialog" aria-modal="true" aria-label="Menu mobile" onClick={() => setOpen(false)}>
-          <div className="mobile-card" onClick={(event) => event.stopPropagation()}>
-            <div className="mobile-card-head">
-              <strong>Menu</strong>
-              <button className="mobile-close" onClick={() => setOpen(false)} aria-label="Chiudi menu" type="button">
-                <X />
-              </button>
-            </div>
+        <div className="mobile-panel" role="dialog" aria-modal="true">
+          <div className="mobile-card">
+            <button className="mobile-close" onClick={() => setOpen(false)} aria-label="Chiudi menu">
+              <X />
+            </button>
             {[...nav, ...solutionNav, ['https://app.teamcontrolcenter.it', 'Accedi app']].map(([href, label]) => (
-              <a href={href} key={href} onClick={() => setOpen(false)}>{label}</a>
+              <a href={href} key={href}>{label}</a>
             ))}
           </div>
         </div>
@@ -474,69 +317,15 @@ function Features() {
   );
 }
 
-type CheckoutForm = {
-  companyName: string;
-  vatNumber: string;
-  contactName: string;
-  email: string;
-  phone: string;
-  employees: string;
-  address: string;
-  city: string;
-};
-
 function Pricing() {
-  const [selectedPlan, setSelectedPlan] = useState('team');
   const [loading, setLoading] = useState('');
   const [msg, setMsg] = useState('');
-  const [banner, setBanner] = useState<{ type: 'success' | 'error'; title: string; text: string } | null>(null);
-  const [form, setForm] = useState<CheckoutForm>({
-    companyName: '',
-    vatNumber: '',
-    contactName: '',
-    email: '',
-    phone: '',
-    employees: '',
-    address: '',
-    city: ''
-  });
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const checkout = params.get('checkout');
-    const sessionId = params.get('session_id');
-
-    if (checkout === 'success') {
-      setBanner({
-        type: 'success',
-        title: 'Pagamento completato correttamente',
-        text: 'Abbiamo ricevuto il pagamento. L’azienda viene registrata come attiva e riceverai una mail di conferma.'
-      });
-      if (sessionId) postJson('/api/billing/checkout-result', { sessionId, result: 'success' }).catch(() => undefined);
-    }
-
-    if (checkout === 'cancel') {
-      setBanner({
-        type: 'error',
-        title: 'Pagamento non completato',
-        text: 'Il pagamento non è andato a buon fine o è stato annullato. L’azienda non viene attivata finché il pagamento non viene completato.'
-      });
-      if (sessionId) postJson('/api/billing/checkout-result', { sessionId, result: 'cancel' }).catch(() => undefined);
-    }
-  }, []);
-
-  function selectPlan(plan: string) {
-    setSelectedPlan(plan);
-    setMsg('');
-    document.getElementById('checkout-company-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  async function checkout(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(selectedPlan);
+  async function checkout(plan: string) {
+    setLoading(plan);
     setMsg('');
     try {
-      const data = await postJson('/api/billing/create-checkout-session', { plan: selectedPlan, ...form });
+      const data = await postJson('/api/billing/create-checkout-session', { plan });
       if (data.url) window.location.href = data.url;
       else setMsg('Richiesta ricevuta. Ti contatteremo per l’attivazione.');
     } catch (e: any) {
@@ -546,22 +335,9 @@ function Pricing() {
     }
   }
 
-  const chosenPlan = plans.find((plan) => plan.key === selectedPlan) || plans[0];
-
   return (
     <>
       <Hero page="pricing" />
-      {banner && (
-        <section className="section payment-banner-section">
-          <div className={`payment-banner ${banner.type}`} role="status">
-            <div className="payment-banner-icon">{banner.type === 'success' ? <CheckCircle2 /> : <X />}</div>
-            <div>
-              <h2>{banner.title}</h2>
-              <p>{banner.text}</p>
-            </div>
-          </div>
-        </section>
-      )}
       <section className="section pricing-section">
         <div className="section-head">
           <p>Piani disponibili</p>
@@ -569,7 +345,7 @@ function Pricing() {
         </div>
         <div className="pricing-grid">
           {plans.map((plan) => (
-            <article className={`price-card ${plan.highlighted ? 'highlighted' : ''} ${selectedPlan === plan.key ? 'selected' : ''}`} key={plan.key}>
+            <article className={`price-card ${plan.highlighted ? 'highlighted' : ''}`} key={plan.key}>
               {plan.highlighted && <div className="popular-badge">Più scelto</div>}
               <h2>{plan.name}</h2>
               <div className="price"><b>{plan.price}</b><span>/mese</span></div>
@@ -580,51 +356,23 @@ function Pricing() {
                   <li key={bullet}><CheckCircle2 />{bullet}</li>
                 ))}
               </ul>
-              <button className="primary full" onClick={() => selectPlan(plan.key)} type="button">
-                {selectedPlan === plan.key ? 'Piano selezionato' : plan.cta}
+              <button className="primary full" onClick={() => checkout(plan.key)} disabled={!!loading}>
+                {loading === plan.key ? 'Apertura pagamento...' : plan.cta}
               </button>
             </article>
           ))}
         </div>
-      </section>
-      <section className="section form-section checkout-form-section" id="checkout-company-form">
-        <form className="lead-form checkout-form" onSubmit={checkout}>
-          <div className="checkout-plan-summary">
-            <span>Piano selezionato</span>
-            <strong>{chosenPlan?.name} - {chosenPlan?.price}/mese</strong>
-          </div>
-          <h2>Dati azienda per attivazione abbonamento</h2>
-          <p>
-            Prima del pagamento inserisci i dati necessari per creare l’azienda nel sistema. Dopo il pagamento confermato, la marketing API invia questi dati all’API SaaS e l’azienda viene creata come attiva con abbonamento collegato.
-          </p>
-          <input required placeholder="Ragione sociale / Nome azienda" value={form.companyName} onChange={(e) => setForm({ ...form, companyName: e.target.value })} />
-          <input required placeholder="Partita IVA o Codice Fiscale aziendale" value={form.vatNumber} onChange={(e) => setForm({ ...form, vatNumber: e.target.value })} />
-          <input required placeholder="Nome e cognome referente" value={form.contactName} onChange={(e) => setForm({ ...form, contactName: e.target.value })} />
-          <input required type="email" placeholder="Email aziendale per conferma pagamento" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-          <div className="form-row">
-            <input required placeholder="Telefono" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-            <input placeholder="Numero dipendenti" value={form.employees} onChange={(e) => setForm({ ...form, employees: e.target.value })} />
-          </div>
-          <div className="form-row">
-            <input placeholder="Indirizzo sede" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
-            <input placeholder="Città" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
-          </div>
-          <label className="privacy-check"><input required type="checkbox" /> Confermo di poter richiedere l’attivazione per questa azienda e accetto Termini, Privacy Policy e gestione dell’abbonamento.</label>
-          <button className="primary full" disabled={!!loading}>
-            {loading ? 'Apertura pagamento sicuro...' : 'Vai al pagamento sicuro con Stripe'}
-          </button>
-          {msg && <div className="notice error">{msg}</div>}
-        </form>
+        {msg && <div className="notice">{msg}</div>}
       </section>
       <section className="section muted-section">
         <div className="split muted-split">
           <div>
             <h2>Pagamento sicuro con Stripe</h2>
-            <p>Il form crea una sessione Stripe Checkout per abbonamento ricorrente. I dati aziendali vengono salvati nei metadata della sessione e usati solo dopo esito positivo.</p>
+            <p>Il pulsante del piano apre una sessione Stripe Checkout per abbonamento ricorrente. Dopo il pagamento, l’azienda viene indirizzata verso l’attivazione guidata.</p>
           </div>
           <div>
             <h2>Attivazione controllata</h2>
-            <p>Quando Stripe conferma il pagamento, il backend invia la mail al cliente, invia la notifica interna alla tua mail SMTP e chiama l’API SaaS per creare l’azienda attiva.</p>
+            <p>L’accesso all’applicativo è legato allo stato dell’abbonamento aziendale. In questo modo il sito pubblico resta semplice, mentre l’area privata applica le regole operative.</p>
           </div>
         </div>
       </section>
@@ -855,99 +603,15 @@ function CTA() {
 }
 
 function CookieBanner() {
-  const [consent, setConsent] = useState<CookieConsent | null>(() => readCookieConsent());
-  const [visible, setVisible] = useState(() => !readCookieConsent());
-  const [panel, setPanel] = useState<'banner' | 'preferences'>('banner');
-  const [analytics, setAnalytics] = useState(() => readCookieConsent()?.analytics || false);
-  const [marketing, setMarketing] = useState(() => readCookieConsent()?.marketing || false);
-
-  useEffect(() => {
-    if (consent) applyCookieConsent(consent);
-  }, [consent]);
-
-  useEffect(() => {
-    const openPreferences = () => {
-      const current = readCookieConsent();
-      setAnalytics(current?.analytics || false);
-      setMarketing(current?.marketing || false);
-      setPanel('preferences');
-      setVisible(true);
-    };
-    window.tccOpenCookiePreferences = openPreferences;
-    window.addEventListener('tcc:open-cookie-preferences', openPreferences);
-    return () => {
-      window.removeEventListener('tcc:open-cookie-preferences', openPreferences);
-      delete window.tccOpenCookiePreferences;
-    };
-  }, []);
-
-  const persist = (next: CookieConsent) => {
-    saveCookieConsent(next);
-    setConsent(next);
-    setVisible(false);
-  };
-
-  const rejectAll = () => persist(defaultConsent());
-  const acceptAll = () => persist({ necessary: true, analytics: true, marketing: false, savedAt: new Date().toISOString(), version: 1 });
-  const savePreferences = () => persist({ necessary: true, analytics, marketing, savedAt: new Date().toISOString(), version: 1 });
-
-  if (!visible) return null;
-
+  const [ok, setOk] = useState(localStorage.getItem('tcc_cookie_choice') || '');
+  if (ok) return null;
   return (
-    <div className="cookie-overlay" role="presentation">
-      <section className="cookie" role="dialog" aria-modal="true" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
-        <div className="cookie-icon"><Cookie size={24} /></div>
-        <div className="cookie-main">
-          <div className="cookie-heading">
-            <p className="eyebrow mini">Privacy e cookie</p>
-            <h2 id="cookie-title">Gestisci il consenso ai cookie</h2>
-          </div>
-          <p id="cookie-desc">
-            Usiamo cookie tecnici necessari per il sito. Google Analytics viene caricato solo se accetti i cookie analytics. Puoi rifiutare, accettare o personalizzare le preferenze in qualsiasi momento.
-          </p>
-          {panel === 'preferences' && (
-            <div className="cookie-preferences" aria-label="Categorie cookie">
-              {cookieCategories.map((category) => {
-                const checked = category.key === 'necessary' ? true : category.key === 'analytics' ? analytics : marketing;
-                const onChange = category.key === 'analytics' ? setAnalytics : setMarketing;
-                return (
-                  <label className="cookie-option" key={category.key}>
-                    <span>
-                      <strong>{category.title}</strong>
-                      <small>{category.description}</small>
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      disabled={category.required}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.checked)}
-                    />
-                  </label>
-                );
-              })}
-            </div>
-          )}
-          <div className="cookie-links">
-            <a href="/cookie-policy">Cookie Policy</a>
-            <a href="/privacy">Privacy Policy</a>
-          </div>
-        </div>
-        <div className="cookie-actions">
-          {panel === 'banner' ? (
-            <>
-              <button type="button" onClick={rejectAll}>Rifiuta non necessari</button>
-              <button type="button" onClick={() => setPanel('preferences')}><SlidersHorizontal size={16} /> Personalizza</button>
-              <button type="button" className="primary small" onClick={acceptAll}>Accetta analytics</button>
-            </>
-          ) : (
-            <>
-              <button type="button" onClick={rejectAll}>Rifiuta tutto</button>
-              <button type="button" onClick={() => setPanel('banner')}>Indietro</button>
-              <button type="button" className="primary small" onClick={savePreferences}>Salva preferenze</button>
-            </>
-          )}
-        </div>
-      </section>
+    <div className="cookie">
+      <p>Usiamo cookie tecnici necessari. Eventuali analytics verranno attivati solo dopo consenso.</p>
+      <div>
+        <button onClick={() => { localStorage.setItem('tcc_cookie_choice', 'necessary'); setOk('necessary'); }}>Solo necessari</button>
+        <button className="primary small" onClick={() => { localStorage.setItem('tcc_cookie_choice', 'all'); setOk('all'); }}>Accetta</button>
+      </div>
     </div>
   );
 }
@@ -971,7 +635,6 @@ function Footer() {
         <div>
           <h3>Legale</h3>
           {legalNav.map(([href, label]) => <a href={href} key={href}>{label}</a>)}
-          <button className="footer-cookie-button" type="button" onClick={() => window.dispatchEvent(new Event('tcc:open-cookie-preferences'))}>Gestisci preferenze cookie</button>
         </div>
       </div>
     </footer>
@@ -983,10 +646,6 @@ export default function App() {
   const { page, post } = useMemo(() => resolveRoute(path), [path]);
 
   useEffect(() => { setMeta(page, post); }, [page, post]);
-  useEffect(() => {
-    const current = readCookieConsent();
-    if (current) applyCookieConsent(current, path);
-  }, [path]);
   useEffect(() => {
     const onPop = () => setPath(normalizedPath());
     window.addEventListener('popstate', onPop);
