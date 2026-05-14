@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock3,
+  Cookie,
   FileText,
   GraduationCap,
   HelpCircle,
@@ -21,6 +22,7 @@ import {
   Rocket,
   ShieldCheck,
   Sparkles,
+  SlidersHorizontal,
   UsersRound,
   X
 } from 'lucide-react';
@@ -64,6 +66,152 @@ const legalNav = [
   ['/sub-responsabili', 'Sub-responsabili'],
   ['/recesso-rimborsi', 'Recesso e rimborsi']
 ];
+
+const GOOGLE_ANALYTICS_ID = 'G-FZPVP3ECSZ';
+const COOKIE_CONSENT_KEY = 'tcc_cookie_consent_v1';
+const COOKIE_LEGACY_KEY = 'tcc_cookie_choice';
+
+const cookieCategories = [
+  {
+    key: 'necessary',
+    title: 'Cookie tecnici necessari',
+    description: 'Servono per far funzionare il sito, ricordare la scelta cookie e proteggere navigazione e moduli. Non possono essere disattivati dal banner.',
+    required: true
+  },
+  {
+    key: 'analytics',
+    title: 'Cookie analytics',
+    description: 'Consentono Google Analytics 4 per misurare visite, pagine viste, sorgenti di traffico e contenuti più utili. Si attivano solo dopo consenso.',
+    required: false
+  },
+  {
+    key: 'marketing',
+    title: 'Cookie marketing e profilazione',
+    description: 'Oggi non sono usati. La preferenza resta disponibile per future campagne, pixel o remarketing, che non verranno caricati senza consenso.',
+    required: false
+  }
+] as const;
+
+type CookieConsent = {
+  necessary: true;
+  analytics: boolean;
+  marketing: boolean;
+  savedAt: string;
+  version: 1;
+};
+
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+    tccOpenCookiePreferences?: () => void;
+  }
+}
+
+function defaultConsent(): CookieConsent {
+  return { necessary: true, analytics: false, marketing: false, savedAt: new Date().toISOString(), version: 1 };
+}
+
+function readCookieConsent(): CookieConsent | null {
+  try {
+    const raw = localStorage.getItem(COOKIE_CONSENT_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<CookieConsent>;
+      return {
+        necessary: true,
+        analytics: Boolean(parsed.analytics),
+        marketing: Boolean(parsed.marketing),
+        savedAt: parsed.savedAt || new Date().toISOString(),
+        version: 1
+      };
+    }
+
+    const legacy = localStorage.getItem(COOKIE_LEGACY_KEY);
+    if (legacy) {
+      return {
+        necessary: true,
+        analytics: legacy === 'all',
+        marketing: false,
+        savedAt: new Date().toISOString(),
+        version: 1
+      };
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function saveCookieConsent(consent: CookieConsent) {
+  localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify({ ...consent, savedAt: new Date().toISOString(), version: 1 }));
+  localStorage.removeItem(COOKIE_LEGACY_KEY);
+}
+
+function deleteCookieAcrossDomains(name: string) {
+  const hostParts = window.location.hostname.split('.');
+  const domains = new Set<string>(['', window.location.hostname]);
+  if (hostParts.length >= 2) domains.add(`.${hostParts.slice(-2).join('.')}`);
+  if (hostParts.length >= 3) domains.add(`.${hostParts.slice(-3).join('.')}`);
+
+  domains.forEach((domain) => {
+    const domainPart = domain ? `; domain=${domain}` : '';
+    document.cookie = `${name}=; Max-Age=0; path=/${domainPart}; SameSite=Lax`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domainPart}; SameSite=Lax`;
+  });
+}
+
+function clearAnalyticsCookies() {
+  const names = document.cookie
+    .split(';')
+    .map((item) => item.trim().split('=')[0])
+    .filter(Boolean)
+    .filter((name) => name === '_ga' || name === '_gid' || name === '_gat' || name.startsWith('_ga_') || name.startsWith('_gac_'));
+
+  ['_ga', '_gid', '_gat', `_ga_${GOOGLE_ANALYTICS_ID.replace('G-', '')}`, ...names].forEach(deleteCookieAcrossDomains);
+}
+
+function loadGoogleAnalytics() {
+  if (!GOOGLE_ANALYTICS_ID || document.querySelector(`script[data-tcc-analytics="${GOOGLE_ANALYTICS_ID}"]`)) {
+    return;
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtag(...args: unknown[]){ window.dataLayer?.push(args); };
+  window.gtag('consent', 'default', {
+    analytics_storage: 'granted',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    functionality_storage: 'granted',
+    security_storage: 'granted'
+  });
+  window.gtag('js', new Date());
+  window.gtag('config', GOOGLE_ANALYTICS_ID, {
+    anonymize_ip: true,
+    send_page_view: false
+  });
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
+  script.dataset.tccAnalytics = GOOGLE_ANALYTICS_ID;
+  document.head.appendChild(script);
+}
+
+function applyCookieConsent(consent: CookieConsent, pathname = window.location.pathname) {
+  if (consent.analytics) {
+    loadGoogleAnalytics();
+    window.gtag?.('consent', 'update', { analytics_storage: 'granted' });
+    window.gtag?.('event', 'page_view', {
+      page_title: document.title,
+      page_path: pathname,
+      page_location: window.location.href
+    });
+  } else {
+    window.gtag?.('consent', 'update', { analytics_storage: 'denied' });
+    clearAnalyticsCookies();
+  }
+}
 
 function normalizedPath() {
   return window.location.pathname.replace(/\/$/, '') || '/';
@@ -707,15 +855,99 @@ function CTA() {
 }
 
 function CookieBanner() {
-  const [ok, setOk] = useState(localStorage.getItem('tcc_cookie_choice') || '');
-  if (ok) return null;
+  const [consent, setConsent] = useState<CookieConsent | null>(() => readCookieConsent());
+  const [visible, setVisible] = useState(() => !readCookieConsent());
+  const [panel, setPanel] = useState<'banner' | 'preferences'>('banner');
+  const [analytics, setAnalytics] = useState(() => readCookieConsent()?.analytics || false);
+  const [marketing, setMarketing] = useState(() => readCookieConsent()?.marketing || false);
+
+  useEffect(() => {
+    if (consent) applyCookieConsent(consent);
+  }, [consent]);
+
+  useEffect(() => {
+    const openPreferences = () => {
+      const current = readCookieConsent();
+      setAnalytics(current?.analytics || false);
+      setMarketing(current?.marketing || false);
+      setPanel('preferences');
+      setVisible(true);
+    };
+    window.tccOpenCookiePreferences = openPreferences;
+    window.addEventListener('tcc:open-cookie-preferences', openPreferences);
+    return () => {
+      window.removeEventListener('tcc:open-cookie-preferences', openPreferences);
+      delete window.tccOpenCookiePreferences;
+    };
+  }, []);
+
+  const persist = (next: CookieConsent) => {
+    saveCookieConsent(next);
+    setConsent(next);
+    setVisible(false);
+  };
+
+  const rejectAll = () => persist(defaultConsent());
+  const acceptAll = () => persist({ necessary: true, analytics: true, marketing: false, savedAt: new Date().toISOString(), version: 1 });
+  const savePreferences = () => persist({ necessary: true, analytics, marketing, savedAt: new Date().toISOString(), version: 1 });
+
+  if (!visible) return null;
+
   return (
-    <div className="cookie">
-      <p>Usiamo cookie tecnici necessari. Eventuali analytics verranno attivati solo dopo consenso.</p>
-      <div>
-        <button onClick={() => { localStorage.setItem('tcc_cookie_choice', 'necessary'); setOk('necessary'); }}>Solo necessari</button>
-        <button className="primary small" onClick={() => { localStorage.setItem('tcc_cookie_choice', 'all'); setOk('all'); }}>Accetta</button>
-      </div>
+    <div className="cookie-overlay" role="presentation">
+      <section className="cookie" role="dialog" aria-modal="true" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
+        <div className="cookie-icon"><Cookie size={24} /></div>
+        <div className="cookie-main">
+          <div className="cookie-heading">
+            <p className="eyebrow mini">Privacy e cookie</p>
+            <h2 id="cookie-title">Gestisci il consenso ai cookie</h2>
+          </div>
+          <p id="cookie-desc">
+            Usiamo cookie tecnici necessari per il sito. Google Analytics viene caricato solo se accetti i cookie analytics. Puoi rifiutare, accettare o personalizzare le preferenze in qualsiasi momento.
+          </p>
+          {panel === 'preferences' && (
+            <div className="cookie-preferences" aria-label="Categorie cookie">
+              {cookieCategories.map((category) => {
+                const checked = category.key === 'necessary' ? true : category.key === 'analytics' ? analytics : marketing;
+                const onChange = category.key === 'analytics' ? setAnalytics : setMarketing;
+                return (
+                  <label className="cookie-option" key={category.key}>
+                    <span>
+                      <strong>{category.title}</strong>
+                      <small>{category.description}</small>
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      disabled={category.required}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.checked)}
+                    />
+                  </label>
+                );
+              })}
+            </div>
+          )}
+          <div className="cookie-links">
+            <a href="/cookie-policy">Cookie Policy</a>
+            <a href="/privacy">Privacy Policy</a>
+          </div>
+        </div>
+        <div className="cookie-actions">
+          {panel === 'banner' ? (
+            <>
+              <button type="button" onClick={rejectAll}>Rifiuta non necessari</button>
+              <button type="button" onClick={() => setPanel('preferences')}><SlidersHorizontal size={16} /> Personalizza</button>
+              <button type="button" className="primary small" onClick={acceptAll}>Accetta analytics</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={rejectAll}>Rifiuta tutto</button>
+              <button type="button" onClick={() => setPanel('banner')}>Indietro</button>
+              <button type="button" className="primary small" onClick={savePreferences}>Salva preferenze</button>
+            </>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
@@ -739,6 +971,7 @@ function Footer() {
         <div>
           <h3>Legale</h3>
           {legalNav.map(([href, label]) => <a href={href} key={href}>{label}</a>)}
+          <button className="footer-cookie-button" type="button" onClick={() => window.dispatchEvent(new Event('tcc:open-cookie-preferences'))}>Gestisci preferenze cookie</button>
         </div>
       </div>
     </footer>
@@ -750,6 +983,10 @@ export default function App() {
   const { page, post } = useMemo(() => resolveRoute(path), [path]);
 
   useEffect(() => { setMeta(page, post); }, [page, post]);
+  useEffect(() => {
+    const current = readCookieConsent();
+    if (current) applyCookieConsent(current, path);
+  }, [path]);
   useEffect(() => {
     const onPop = () => setPath(normalizedPath());
     window.addEventListener('popstate', onPop);
