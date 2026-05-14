@@ -99,62 +99,72 @@ export const legalPages = {
   },
   "cookies": {
     "label": "Cookie Policy",
-    "updated": "13 maggio 2026",
-    "intro": "Questa Cookie Policy spiega quali cookie e strumenti simili possono essere usati sul sito Team Control Center, come vengono gestite le preferenze dell’utente e quali regole si applicano a cookie tecnici, analytics, marketing e strumenti di terze parti.",
-    "noticeTitle": "Impostazione prudenziale",
-    "notice": "Il sito è predisposto per usare solo cookie tecnici necessari di default. Analytics, pixel, strumenti pubblicitari, heatmap o altri sistemi non essenziali devono rimanere disattivati finché non viene raccolto un consenso valido tramite banner o piattaforma di consenso conforme.",
+    "updated": "14 maggio 2026",
+    "intro": "Questa Cookie Policy spiega quali cookie e strumenti simili utilizza il sito Team Control Center, come funziona il banner di consenso GDPR e come l’utente può accettare, rifiutare, personalizzare o revocare i cookie non necessari.",
+    "noticeTitle": "Gestione consenso aggiornata",
+    "notice": "Il sito usa di default solo strumenti tecnici necessari. Google Analytics 4 con ID G-FZPVP3ECSZ viene caricato esclusivamente dopo consenso ai cookie analytics. I cookie marketing sono predisposti nella gestione preferenze ma non vengono attivati finché non saranno configurati strumenti specifici e relativa documentazione.",
     "sections": [
       {
         "title": "1. Cosa sono cookie e strumenti simili",
         "paragraphs": [
-          "I cookie sono piccoli file o identificatori salvati sul dispositivo dell’utente durante la navigazione. Tecnologie simili possono includere local storage, session storage, pixel, tag, SDK, identificatori del browser e sistemi di tracciamento equivalenti.",
-          "Questi strumenti possono essere necessari per il funzionamento tecnico del sito oppure utilizzati per statistiche, preferenze, marketing, sicurezza o integrazioni di terze parti."
+          "I cookie sono piccoli file salvati sul dispositivo dell’utente durante la navigazione. Tecnologie simili possono includere local storage, session storage, pixel, tag, SDK, identificatori del browser e altri strumenti tecnici equivalenti.",
+          "Questi strumenti possono servire per il funzionamento tecnico del sito, per ricordare preferenze, per misurare statistiche aggregate o, solo se configurati e autorizzati, per finalità marketing e profilazione."
         ]
       },
       {
         "title": "2. Cookie tecnici necessari",
         "paragraphs": [
-          "Il sito può usare cookie o local storage necessari per ricordare la scelta cookie, mantenere preferenze tecniche, proteggere il sito, bilanciare il traffico, prevenire abusi, garantire la sessione e consentire il corretto funzionamento delle pagine.",
-          "I cookie tecnici non richiedono il consenso dell’utente quando sono strettamente necessari alla fornitura del servizio richiesto, ma devono essere indicati in modo trasparente."
+          "Il sito utilizza strumenti tecnici necessari per mostrare le pagine, proteggere la navigazione, gestire i moduli, ricordare la scelta cookie e garantire il corretto funzionamento dell’esperienza utente.",
+          "Questi strumenti non richiedono consenso preventivo quando sono strettamente necessari al servizio richiesto, ma sono indicati in modo trasparente. La scelta cookie viene salvata nel local storage con chiave tcc_cookie_consent_v1."
         ]
       },
       {
         "title": "3. Cookie analytics",
         "paragraphs": [
-          "Gli strumenti di analisi possono essere usati per capire quali pagine vengono visitate, quali contenuti funzionano meglio e quali problemi tecnici si verificano. Se configurati in modo realmente anonimizzato e aggregato possono essere gestiti come strumenti a basso impatto; diversamente richiedono consenso.",
-          "Nel pacchetto pubblicato, gli analytics non sono abilitati di default. Prima di attivarli occorre configurare banner, preferenze, blocco preventivo e documentazione dei fornitori usati."
+          "Il sito è predisposto per usare Google Analytics 4, proprietà G-FZPVP3ECSZ, per misurare pagine visitate, sorgenti di traffico, eventi tecnici e andamento dei contenuti. Questo strumento viene caricato solo dopo consenso esplicito alla categoria analytics.",
+          "Se l’utente rifiuta o revoca il consenso analytics, il tag Google non viene caricato e il sito prova a rimuovere i cookie analytics già presenti, inclusi _ga, _gid, _gat, _ga_* e _gac_* compatibilmente con le limitazioni tecniche del browser e del dominio."
         ]
       },
       {
         "title": "4. Cookie marketing e profilazione",
         "paragraphs": [
-          "Cookie pubblicitari, pixel, remarketing, profilazione, tracciamenti cross-site o strumenti simili devono essere attivati solo dopo consenso espresso dell’utente. Non devono essere caricati prima della scelta positiva dell’utente.",
-          "L’utente deve poter rifiutare con la stessa semplicità con cui può accettare e deve poter modificare le preferenze successivamente."
+          "Alla data di aggiornamento di questa policy il sito non carica pixel pubblicitari, remarketing, heatmap o strumenti di profilazione. La categoria marketing è presente nel pannello preferenze per consentire una gestione ordinata di eventuali future integrazioni.",
+          "Eventuali cookie marketing, profilazione o tracciamenti cross-site saranno attivati solo dopo consenso specifico e dopo aggiornamento della documentazione informativa sui fornitori utilizzati."
         ]
       },
       {
-        "title": "5. Banner e consenso",
+        "title": "5. Banner e preferenze",
         "paragraphs": [
-          "Il banner deve permettere almeno di accettare, rifiutare o configurare le preferenze. La chiusura del banner o la prosecuzione della navigazione non devono equivalere a consenso per cookie non necessari.",
-          "La scelta dell’utente deve essere registrata per un periodo proporzionato e non riproposta inutilmente, salvo modifiche sostanziali agli strumenti usati o scadenza del consenso."
+          "Al primo accesso il banner consente di rifiutare i cookie non necessari, accettare gli analytics o personalizzare le preferenze per categoria. La chiusura del banner o la semplice prosecuzione della navigazione non equivalgono a consenso per cookie non necessari.",
+          "Il consenso può essere modificato in qualsiasi momento tramite il link “Gestisci preferenze cookie” presente nel footer del sito. La revoca del consenso produce effetto per le successive navigazioni e disattiva il caricamento degli strumenti non necessari."
         ]
       },
       {
-        "title": "6. Gestione tramite browser",
+        "title": "6. Elenco sintetico degli strumenti",
         "paragraphs": [
-          "L’utente può cancellare o bloccare i cookie anche dalle impostazioni del browser. Il blocco dei cookie tecnici può però impedire il corretto funzionamento di alcune parti del sito o dell’applicativo."
+          "Necessari: local storage tcc_cookie_consent_v1 per memorizzare la scelta cookie; durata indicativa fino a revoca, cancellazione browser o aggiornamento sostanziale della gestione cookie.",
+          "Analytics: Google Analytics 4, ID G-FZPVP3ECSZ, con caricamento condizionato al consenso. Possibili cookie impostati da Google dopo consenso: _ga, _ga_*, _gid, _gat o equivalenti tecnici del servizio.",
+          "Marketing: nessun cookie marketing attivo alla data di aggiornamento. Eventuali strumenti futuri saranno documentati prima dell’attivazione."
         ]
       },
       {
         "title": "7. Terze parti",
         "paragraphs": [
-          "Eventuali servizi esterni come provider di pagamento, mappe, video, font, CDN, analytics o strumenti marketing possono impostare propri cookie o identificatori. Prima dell’attivazione devono essere valutati, documentati e, quando necessario, subordinati al consenso."
+          "I dati raccolti tramite Google Analytics, se l’utente presta consenso, sono trattati anche secondo le condizioni e informative di Google. Team Control Center non conserva dati completi di pagamento sul sito quando il pagamento avviene tramite provider esterni come Stripe Checkout.",
+          "Eventuali fornitori tecnici, email, hosting, sicurezza, pagamento o analytics sono indicati nella documentazione privacy e nei sub-responsabili quando applicabile."
         ]
       },
       {
-        "title": "8. Aggiornamenti",
+        "title": "8. Gestione tramite browser",
         "paragraphs": [
-          "La Cookie Policy può essere aggiornata quando cambiano strumenti tecnici, fornitori, finalità o basi giuridiche. La versione pubblicata indica la data dell’ultimo aggiornamento."
+          "L’utente può cancellare o bloccare cookie e dati locali anche dalle impostazioni del browser. Il blocco degli strumenti tecnici necessari può impedire il corretto funzionamento di alcune parti del sito o dell’applicativo.",
+          "La cancellazione dei dati del browser può far ricomparire il banner perché viene rimossa la scelta precedentemente salvata."
+        ]
+      },
+      {
+        "title": "9. Aggiornamenti",
+        "paragraphs": [
+          "La Cookie Policy può essere aggiornata quando cambiano strumenti tecnici, fornitori, finalità, basi giuridiche, categorie cookie o modalità di raccolta del consenso. La versione pubblicata indica la data dell’ultimo aggiornamento."
         ]
       }
     ]
