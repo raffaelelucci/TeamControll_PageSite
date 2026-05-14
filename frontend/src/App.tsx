@@ -466,15 +466,69 @@ function Features() {
   );
 }
 
+type CheckoutForm = {
+  companyName: string;
+  vatNumber: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  employees: string;
+  address: string;
+  city: string;
+};
+
 function Pricing() {
+  const [selectedPlan, setSelectedPlan] = useState('team');
   const [loading, setLoading] = useState('');
   const [msg, setMsg] = useState('');
+  const [banner, setBanner] = useState<{ type: 'success' | 'error'; title: string; text: string } | null>(null);
+  const [form, setForm] = useState<CheckoutForm>({
+    companyName: '',
+    vatNumber: '',
+    contactName: '',
+    email: '',
+    phone: '',
+    employees: '',
+    address: '',
+    city: ''
+  });
 
-  async function checkout(plan: string) {
-    setLoading(plan);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const checkout = params.get('checkout');
+    const sessionId = params.get('session_id');
+
+    if (checkout === 'success') {
+      setBanner({
+        type: 'success',
+        title: 'Pagamento completato correttamente',
+        text: 'Abbiamo ricevuto il pagamento. L’azienda viene registrata come attiva e riceverai una mail di conferma.'
+      });
+      if (sessionId) postJson('/api/billing/checkout-result', { sessionId, result: 'success' }).catch(() => undefined);
+    }
+
+    if (checkout === 'cancel') {
+      setBanner({
+        type: 'error',
+        title: 'Pagamento non completato',
+        text: 'Il pagamento non è andato a buon fine o è stato annullato. L’azienda non viene attivata finché il pagamento non viene completato.'
+      });
+      if (sessionId) postJson('/api/billing/checkout-result', { sessionId, result: 'cancel' }).catch(() => undefined);
+    }
+  }, []);
+
+  function selectPlan(plan: string) {
+    setSelectedPlan(plan);
+    setMsg('');
+    document.getElementById('checkout-company-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function checkout(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(selectedPlan);
     setMsg('');
     try {
-      const data = await postJson('/api/billing/create-checkout-session', { plan });
+      const data = await postJson('/api/billing/create-checkout-session', { plan: selectedPlan, ...form });
       if (data.url) window.location.href = data.url;
       else setMsg('Richiesta ricevuta. Ti contatteremo per l’attivazione.');
     } catch (e: any) {
@@ -484,9 +538,22 @@ function Pricing() {
     }
   }
 
+  const chosenPlan = plans.find((plan) => plan.key === selectedPlan) || plans[0];
+
   return (
     <>
       <Hero page="pricing" />
+      {banner && (
+        <section className="section payment-banner-section">
+          <div className={`payment-banner ${banner.type}`} role="status">
+            <div className="payment-banner-icon">{banner.type === 'success' ? <CheckCircle2 /> : <X />}</div>
+            <div>
+              <h2>{banner.title}</h2>
+              <p>{banner.text}</p>
+            </div>
+          </div>
+        </section>
+      )}
       <section className="section pricing-section">
         <div className="section-head">
           <p>Piani disponibili</p>
@@ -494,7 +561,7 @@ function Pricing() {
         </div>
         <div className="pricing-grid">
           {plans.map((plan) => (
-            <article className={`price-card ${plan.highlighted ? 'highlighted' : ''}`} key={plan.key}>
+            <article className={`price-card ${plan.highlighted ? 'highlighted' : ''} ${selectedPlan === plan.key ? 'selected' : ''}`} key={plan.key}>
               {plan.highlighted && <div className="popular-badge">Più scelto</div>}
               <h2>{plan.name}</h2>
               <div className="price"><b>{plan.price}</b><span>/mese</span></div>
@@ -505,23 +572,51 @@ function Pricing() {
                   <li key={bullet}><CheckCircle2 />{bullet}</li>
                 ))}
               </ul>
-              <button className="primary full" onClick={() => checkout(plan.key)} disabled={!!loading}>
-                {loading === plan.key ? 'Apertura pagamento...' : plan.cta}
+              <button className="primary full" onClick={() => selectPlan(plan.key)} type="button">
+                {selectedPlan === plan.key ? 'Piano selezionato' : plan.cta}
               </button>
             </article>
           ))}
         </div>
-        {msg && <div className="notice">{msg}</div>}
+      </section>
+      <section className="section form-section checkout-form-section" id="checkout-company-form">
+        <form className="lead-form checkout-form" onSubmit={checkout}>
+          <div className="checkout-plan-summary">
+            <span>Piano selezionato</span>
+            <strong>{chosenPlan?.name} - {chosenPlan?.price}/mese</strong>
+          </div>
+          <h2>Dati azienda per attivazione abbonamento</h2>
+          <p>
+            Prima del pagamento inserisci i dati necessari per creare l’azienda nel sistema. Dopo il pagamento confermato, la marketing API invia questi dati all’API SaaS e l’azienda viene creata come attiva con abbonamento collegato.
+          </p>
+          <input required placeholder="Ragione sociale / Nome azienda" value={form.companyName} onChange={(e) => setForm({ ...form, companyName: e.target.value })} />
+          <input required placeholder="Partita IVA o Codice Fiscale aziendale" value={form.vatNumber} onChange={(e) => setForm({ ...form, vatNumber: e.target.value })} />
+          <input required placeholder="Nome e cognome referente" value={form.contactName} onChange={(e) => setForm({ ...form, contactName: e.target.value })} />
+          <input required type="email" placeholder="Email aziendale per conferma pagamento" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+          <div className="form-row">
+            <input required placeholder="Telefono" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <input placeholder="Numero dipendenti" value={form.employees} onChange={(e) => setForm({ ...form, employees: e.target.value })} />
+          </div>
+          <div className="form-row">
+            <input placeholder="Indirizzo sede" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
+            <input placeholder="Città" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+          </div>
+          <label className="privacy-check"><input required type="checkbox" /> Confermo di poter richiedere l’attivazione per questa azienda e accetto Termini, Privacy Policy e gestione dell’abbonamento.</label>
+          <button className="primary full" disabled={!!loading}>
+            {loading ? 'Apertura pagamento sicuro...' : 'Vai al pagamento sicuro con Stripe'}
+          </button>
+          {msg && <div className="notice error">{msg}</div>}
+        </form>
       </section>
       <section className="section muted-section">
         <div className="split muted-split">
           <div>
             <h2>Pagamento sicuro con Stripe</h2>
-            <p>Il pulsante del piano apre una sessione Stripe Checkout per abbonamento ricorrente. Dopo il pagamento, l’azienda viene indirizzata verso l’attivazione guidata.</p>
+            <p>Il form crea una sessione Stripe Checkout per abbonamento ricorrente. I dati aziendali vengono salvati nei metadata della sessione e usati solo dopo esito positivo.</p>
           </div>
           <div>
             <h2>Attivazione controllata</h2>
-            <p>L’accesso all’applicativo è legato allo stato dell’abbonamento aziendale. In questo modo il sito pubblico resta semplice, mentre l’area privata applica le regole operative.</p>
+            <p>Quando Stripe conferma il pagamento, il backend invia la mail al cliente, invia la notifica interna alla tua mail SMTP e chiama l’API SaaS per creare l’azienda attiva.</p>
           </div>
         </div>
       </section>
