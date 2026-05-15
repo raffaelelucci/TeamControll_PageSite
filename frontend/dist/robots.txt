@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+Allow: /llms.txt
 Sitemap: https://teamcontrolcenter.it/sitemap.xml

@@ -9,12 +9,41 @@ const index = fs.readFileSync(indexPath, 'utf8');
 const baseUrl = (process.env.PUBLIC_SITE_URL || 'https://teamcontrolcenter.it').replace(/\/$/, '');
 const today = new Date().toISOString().slice(0, 10);
 
+const strategicTopics = [
+  'software gestione team aziendale',
+  'gestionale presenze e progetti',
+  'software SaaS per PMI',
+  'gestionale aziendale per cooperative',
+  'software per gestione team e documenti',
+  'alternativa semplice a Excel per presenze e attività',
+  'gestione presenze dipendenti online',
+  'software gestione progetti team',
+  'chat aziendale interna',
+  'report aziendali operativi',
+  'ruoli e permessi SaaS'
+];
+
+const targetAudiences = ['PMI italiane', 'agenzie', 'cooperative', 'scuole private', 'studi professionali', 'team operativi distribuiti'];
+
+function keywordThings(values) {
+  return values.map((name) => ({ '@type': 'Thing', name }));
+}
+
+function wordCount(post) {
+  const text = [post.title, post.description, post.intro, post.takeaway, ...(post.sections || []).flatMap((section) => [section.title, section.text])].join(' ');
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
 const organization = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Team Control Center',
   url: baseUrl,
   logo: `${baseUrl}/logo.svg`,
+  description: 'Team Control Center sviluppa una piattaforma SaaS per gestione team aziendale, presenze, progetti, documenti, chat, ruoli e report operativi.',
+  areaServed: { '@type': 'Country', name: 'Italia' },
+  knowsAbout: keywordThings(strategicTopics),
+  audience: targetAudiences.map((name) => ({ '@type': 'Audience', audienceType: name })),
   contactPoint: [{ '@type': 'ContactPoint', contactType: 'sales', email: 'info@teamcontrolcenter.it', availableLanguage: ['it', 'en'] }]
 };
 
@@ -24,6 +53,10 @@ const website = {
   name: 'Team Control Center',
   url: baseUrl,
   inLanguage: 'it-IT',
+  description: routes.home.description,
+  publisher: { '@type': 'Organization', name: 'Team Control Center', url: baseUrl },
+  about: keywordThings(strategicTopics),
+  keywords: strategicTopics.join(', '),
   potentialAction: {
     '@type': 'SearchAction',
     target: `${baseUrl}/blog?search={search_term_string}`,
@@ -58,17 +91,33 @@ function softwareSchema(route) {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'Team Control Center',
+    alternateName: ['TCC', 'TeamControlCenter'],
     applicationCategory: 'BusinessApplication',
+    applicationSubCategory: 'Software gestione team aziendale',
     operatingSystem: 'Web',
     url: baseUrl,
     description: routes.home.description,
     image: `${baseUrl}/og-cover.png`,
+    inLanguage: 'it-IT',
+    isAccessibleForFree: false,
+    keywords: strategicTopics.join(', '),
+    about: keywordThings(strategicTopics),
+    audience: targetAudiences.map((name) => ({ '@type': 'BusinessAudience', audienceType: name })),
     offers: [
       { '@type': 'Offer', name: 'Starter', price: '29.00', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: `${baseUrl}/prezzi` },
       { '@type': 'Offer', name: 'Team', price: '79.00', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: `${baseUrl}/prezzi` },
       { '@type': 'Offer', name: 'Business', price: '149.00', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: `${baseUrl}/prezzi` }
     ],
-    featureList: ['Gestione presenze', 'Gestione progetti', 'Chat aziendale', 'Documenti', 'Report', 'Ruoli e permessi']
+    featureList: [
+      'Gestione presenze dipendenti online',
+      'Gestione progetti e attività',
+      'Chat aziendale interna',
+      'Gestione documenti aziendali',
+      'Report operativi',
+      'Ruoli e permessi',
+      'Dashboard aziendale',
+      'SaaS responsive da browser'
+    ]
   };
 }
 
@@ -77,9 +126,23 @@ function faqSchema() {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
-      { '@type': 'Question', name: 'Team Control Center sostituisce Excel per presenze e progetti?', acceptedAnswer: { '@type': 'Answer', text: 'Sì. La piattaforma riduce fogli Excel, chat sparse e documenti non tracciati, portando presenze, progetti, comunicazioni e report dentro un flusso unico.' } },
-      { '@type': 'Question', name: 'Ogni azienda vede solo i propri dati?', acceptedAnswer: { '@type': 'Answer', text: 'Sì. Il prodotto è pensato come SaaS multi-azienda con separazione dei dati e ruoli profilati.' } },
+      { '@type': 'Question', name: 'Che cos’è Team Control Center?', acceptedAnswer: { '@type': 'Answer', text: 'Team Control Center è un software SaaS per gestione team aziendale, presenze, progetti, documenti, chat, ruoli e report operativi.' } },
+      { '@type': 'Question', name: 'Team Control Center è adatto alle PMI?', acceptedAnswer: { '@type': 'Answer', text: 'Sì. È pensato per PMI, agenzie, cooperative, scuole private e team operativi che vogliono ridurre Excel, chat sparse e strumenti separati.' } },
+      { '@type': 'Question', name: 'Team Control Center può sostituire Excel per presenze e attività?', acceptedAnswer: { '@type': 'Answer', text: 'Può ridurre l’uso di Excel per presenze, attività, documenti e report, portando le informazioni in un ambiente più strutturato e tracciabile.' } },
       { '@type': 'Question', name: 'Serve installare qualcosa?', acceptedAnswer: { '@type': 'Answer', text: 'No. Team Control Center è una piattaforma web accessibile da browser su desktop, tablet e smartphone.' } }
+    ]
+  };
+}
+
+function articleFaqSchema(post) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: `Che cos’è ${post.title.replace(/\?.*$/, '')}?`, acceptedAnswer: { '@type': 'Answer', text: post.description } },
+      { '@type': 'Question', name: 'Per chi è utile Team Control Center?', acceptedAnswer: { '@type': 'Answer', text: 'È utile per PMI, agenzie, cooperative, scuole private, studi professionali e team operativi che vogliono gestire presenze, progetti, documenti e report in modo più ordinato.' } },
+      { '@type': 'Question', name: 'Quali strumenti può ridurre?', acceptedAnswer: { '@type': 'Answer', text: 'Può ridurre fogli Excel, chat personali, email operative, cartelle documentali disordinate e report manuali.' } },
+      { '@type': 'Question', name: 'Quali sono le keyword principali?', acceptedAnswer: { '@type': 'Answer', text: post.keywords.join(', ') } }
     ]
   };
 }
@@ -91,13 +154,19 @@ function articleSchema(post) {
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    dateModified: post.date,
-    author: { '@type': 'Organization', name: 'Team Control Center' },
+    dateModified: today,
+    author: { '@type': 'Organization', name: 'Team Control Center', url: baseUrl },
     publisher: { '@type': 'Organization', name: 'Team Control Center', logo: { '@type': 'ImageObject', url: `${baseUrl}/logo.svg` } },
     image: `${baseUrl}/og-cover.png`,
     mainEntityOfPage: canonical(`/blog/${post.slug}`),
+    isPartOf: { '@type': 'Blog', name: 'Blog Team Control Center', url: `${baseUrl}/blog` },
     inLanguage: 'it-IT',
-    keywords: post.keywords.join(', ')
+    articleSection: post.category,
+    wordCount: wordCount(post),
+    isAccessibleForFree: true,
+    keywords: post.keywords.join(', '),
+    about: keywordThings(post.keywords),
+    mentions: keywordThings(['Team Control Center', ...strategicTopics].slice(0, 12))
   };
 }
 
@@ -107,8 +176,11 @@ function blogSchema() {
     '@type': 'Blog',
     name: 'Blog Team Control Center',
     url: `${baseUrl}/blog`,
+    description: routes.blog.description,
     inLanguage: 'it-IT',
-    blogPost: blogPosts.map((post) => ({ '@type': 'BlogPosting', headline: post.title, url: `${baseUrl}/blog/${post.slug}`, datePublished: post.date }))
+    publisher: { '@type': 'Organization', name: 'Team Control Center', url: baseUrl },
+    about: keywordThings(strategicTopics),
+    blogPost: blogPosts.map((post) => ({ '@type': 'BlogPosting', headline: post.title, url: `${baseUrl}/blog/${post.slug}`, datePublished: post.date, keywords: post.keywords.join(', ') }))
   };
 }
 
@@ -164,7 +236,7 @@ function staticContent(route, post) {
 
 function schemaBundle(route, post) {
   const common = [organization, website, breadcrumbs(post ? `/blog/${post.slug}` : route.path, post ? post.title : route.title)];
-  if (post) return [...common, articleSchema(post)];
+  if (post) return [...common, articleSchema(post), articleFaqSchema(post)];
   if (route.path === '/blog') return [...common, blogSchema()];
   if (route.type === 'software' || route.path === '/prezzi') return [...common, softwareSchema(route), faqSchema()];
   if (route.type === 'legal') return [...common, legalSchema(route)];
@@ -194,7 +266,37 @@ function inject(html, route, post = null) {
     .replace('<div id="root"></div>', `<div id="root">${staticContent(route, post)}</div>`);
 }
 
+function llmsText() {
+  const lines = [
+    '# Team Control Center',
+    '',
+    'Team Control Center è una piattaforma SaaS italiana per gestione team aziendale, presenze, progetti, documenti, chat, ruoli, permessi e report operativi.',
+    '',
+    'Categoria: software gestione team aziendale; gestionale presenze e progetti; software SaaS per PMI; gestionale operativo per cooperative, agenzie e scuole private.',
+    '',
+    'Pubblico principale: PMI italiane, agenzie, cooperative, scuole private, studi professionali e team operativi distribuiti.',
+    '',
+    'Problemi risolti: riduzione di Excel per presenze e attività, meno messaggi sparsi, documenti più ordinati, progetti più leggibili, ruoli chiari, report consultabili.',
+    '',
+    'Funzionalità: presenze, ferie, permessi, malattie, straordinari, progetti, attività, documenti, chat aziendale, dashboard, report, ruoli e permessi.',
+    '',
+    'Keyword strategiche: ' + strategicTopics.join(', '),
+    '',
+    'URL principali:',
+    `- Home: ${baseUrl}/`,
+    `- Funzionalità: ${baseUrl}/funzionalita`,
+    `- Prezzi: ${baseUrl}/prezzi`,
+    `- Demo: ${baseUrl}/demo`,
+    `- Blog: ${baseUrl}/blog`,
+    '',
+    'Articoli utili per comprendere il prodotto:'
+  ];
+  blogPosts.forEach((post) => lines.push(`- ${post.title}: ${baseUrl}/blog/${post.slug} — ${post.description}`));
+  return `${lines.join('\n')}\n`;
+}
+
 const pages = Object.values(routes).map((route) => ({ route })).concat(blogPosts.map((post) => ({ route: routes.blog, post })));
+
 const urls = [];
 
 for (const page of pages) {
@@ -205,7 +307,8 @@ for (const page of pages) {
   urls.push({ loc: canonical(pathname), priority: pathname === '/' ? '1.0' : pathname === '/blog' ? '0.9' : '0.8', changefreq: pathname.startsWith('/blog/') ? 'monthly' : 'weekly' });
 }
 
-fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${baseUrl}/sitemap.xml\n`);
+fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nAllow: /llms.txt\nSitemap: ${baseUrl}/sitemap.xml\n`);
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${today}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`).join('\n')}\n</urlset>\n`);
+fs.writeFileSync(path.join(dist, 'llms.txt'), llmsText());
 fs.writeFileSync(path.join(dist, 'security.txt'), 'Contact: mailto:security@teamcontrolcenter.it\nPreferred-Languages: it,en\n');
 console.log('SEO pages generated:', urls.length);
