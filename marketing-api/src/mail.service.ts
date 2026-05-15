@@ -1,6 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
+type MailAttachment = {
+  originalname: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+};
+
+type ContactMailPayload = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  company?: string;
+  subject?: string;
+  message?: string;
+  source?: string;
+};
+
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
@@ -50,6 +67,10 @@ export class MailService {
     return process.env.INTERNAL_PAYMENT_EMAIL || process.env.SALES_TO_EMAIL || process.env.SMTP_USER;
   }
 
+  private contactTo() {
+    return process.env.CONTACT_TO_EMAIL || process.env.SALES_TO_EMAIL || process.env.INTERNAL_PAYMENT_EMAIL || process.env.SMTP_USER;
+  }
+
   async safeSend(label: string, fn: () => Promise<void>) {
     try {
       await fn();
@@ -64,8 +85,7 @@ export class MailService {
   async sendInternalLead(subject: string, payload: object) {
     const to = this.internalTo();
     if (!to) {
-      this.logger.warn('Nessuna mail interna configurata: imposta INTERNAL_PAYMENT_EMAIL, SALES_TO_EMAIL o SMTP_USER');
-      return;
+      throw new Error('Nessuna mail interna configurata: imposta INTERNAL_PAYMENT_EMAIL, SALES_TO_EMAIL o SMTP_USER');
     }
 
     this.logger.log(`[MAIL][START] Invio mail interna to=${this.maskEmail(to)} subject="${subject}"`);
@@ -80,6 +100,62 @@ export class MailService {
       to,
       subject: 'Richiesta ricevuta - Team Control Center',
       html: `<p>Ciao ${this.escape(name)},</p><p>abbiamo ricevuto la tua richiesta. Ti contatteremo per configurare la prova o l’abbonamento aziendale.</p><p>Team Control Center</p>`,
+    });
+  }
+
+  async sendInternalContactRequest(payload: ContactMailPayload, attachments: MailAttachment[] = []) {
+    const to = this.contactTo();
+    if (!to) {
+      throw new Error('Nessuna mail contatti configurata: imposta CONTACT_TO_EMAIL, SALES_TO_EMAIL, INTERNAL_PAYMENT_EMAIL o SMTP_USER');
+    }
+
+    const subject = `Nuovo contatto sito - ${payload.subject || 'Team Control Center'}`;
+    this.logger.log(`[MAIL][START] Invio contatto interno to=${this.maskEmail(to)} subject="${subject}" attachments=${attachments.length}`);
+
+    const rows = [
+      ['Nome', `${payload.firstName || ''} ${payload.lastName || ''}`.trim()],
+      ['Email', payload.email || ''],
+      ['Azienda', payload.company || ''],
+      ['Oggetto', payload.subject || ''],
+      ['Origine', payload.source || 'contatti'],
+      ['Allegati', attachments.length ? attachments.map((file) => `${file.originalname} (${Math.round(file.size / 1024)} KB)`).join(', ') : 'Nessun allegato']
+    ];
+
+    const html = `
+      <h2>Nuova richiesta di contatto dal sito</h2>
+      <table style="font-family:Inter,Arial,sans-serif;border-collapse:collapse;width:100%;max-width:760px">
+        ${rows.map(([label, value]) => `<tr><th style="text-align:left;border:1px solid #dbe5f2;padding:10px;background:#f8fafc;width:180px">${this.escape(label)}</th><td style="border:1px solid #dbe5f2;padding:10px">${this.escape(value)}</td></tr>`).join('')}
+      </table>
+      <h3>Messaggio</h3>
+      <pre style="font-family:Inter,Arial,sans-serif;background:#f8fafc;padding:16px;border-radius:12px;white-space:pre-wrap">${this.escape(payload.message || '')}</pre>
+    `;
+
+    await this.transporter().sendMail({
+      from: this.from(),
+      to,
+      replyTo: payload.email,
+      subject,
+      html,
+      attachments: attachments.map((file) => ({
+        filename: this.sanitizeFilename(file.originalname),
+        content: file.buffer,
+        contentType: file.mimetype
+      }))
+    });
+  }
+
+  async sendContactAck(to: string, name: string) {
+    this.logger.log(`[MAIL][START] Invio ack contatto cliente to=${this.maskEmail(to)}`);
+    await this.transporter().sendMail({
+      from: this.from(),
+      to,
+      subject: 'Messaggio ricevuto - Team Control Center',
+      html: `
+        <p>Ciao ${this.escape(name || '')},</p>
+        <p>abbiamo ricevuto il tuo messaggio tramite la sezione Contattaci di Team Control Center.</p>
+        <p>Ti risponderemo appena possibile con le informazioni più utili per la tua azienda.</p>
+        <p>Team Control Center</p>
+      `
     });
   }
 
@@ -122,6 +198,12 @@ export class MailService {
 
   async sendPaymentFailureInternal(data: Record<string, unknown>) {
     await this.sendInternalLead('Pagamento non completato / fallito', data);
+  }
+
+  private sanitizeFilename(value: string) {
+    return String(value || 'allegato')
+      .replace(/[^a-zA-Z0-9._\- àèéìòùÀÈÉÌÒÙ]/g, '_')
+      .slice(0, 140) || 'allegato';
   }
 
   private maskEmail(value: string) {

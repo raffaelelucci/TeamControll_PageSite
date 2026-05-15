@@ -83,12 +83,12 @@ export const routes: Record<PageKey, RouteMeta> = {
   },
   contacts: {
     path: '/contatti',
-    title: 'Contatti Team Control Center | Informazioni, demo e attivazione',
+    title: 'Contattaci Team Control Center | Informazioni, demo, attivazione e documenti',
     description:
-      'Contatta Team Control Center per informazioni commerciali, demo, attivazione aziendale, piani SaaS, gestione team, presenze e progetti.',
-    h1: 'Parliamo della tua organizzazione e del modo migliore per gestirla',
+      'Contattaci per informazioni commerciali, demo, attivazione aziendale, piani SaaS, gestione team, presenze, progetti, Kanban, documenti e richieste con allegati opzionali.',
+    h1: 'Contattaci per capire come organizzare meglio team, progetti e attività',
     kicker: 'Contatti',
-    keywords: ['contatti Team Control Center', 'richiesta informazioni software aziendale']
+    keywords: ['contattaci Team Control Center', 'richiesta informazioni software aziendale', 'software gestione team aziendale', 'gestionale progetti', 'software presenze e progetti', 'gestionale documenti e attività']
   },
   presence: {
     path: '/software-gestione-presenze-dipendenti',

@@ -46,7 +46,8 @@ const nav = [
   ['/funzionalita', 'Funzionalità'],
   ['/prezzi', 'Prezzi'],
   ['/blog', 'Blog'],
-  ['/demo', 'Demo']
+  ['/demo', 'Demo'],
+  ['/contatti', 'Contatti']
 ];
 
 const solutionNav = [
@@ -230,6 +231,8 @@ function loadGoogleAnalytics() {
 }
 
 function sendGoogleAnalyticsEvent(eventName: string, params: Record<string, string | number | boolean> = {}) {
+  const consent = readCookieConsent();
+  if (!consent?.analytics) return;
   loadGoogleAnalytics();
   window.gtag?.('event', eventName, analyticsEventParams(params));
 }
@@ -306,6 +309,45 @@ async function postJson(url: string, payload: unknown) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message || 'Richiesta non riuscita');
   return data;
+}
+
+async function postFormData(url: string, payload: FormData) {
+  const res = await fetch(url, {
+    method: 'POST',
+    body: payload
+  });
+  const contentType = res.headers.get('content-type') || '';
+  const data = contentType.includes('application/json') ? await res.json().catch(() => ({})) : {};
+  if (!res.ok) throw new Error(data.message || 'Invio non riuscito. Controlla i dati e riprova.');
+  return data;
+}
+
+type FormNotice = { type: 'success' | 'error'; text: string } | null;
+
+const CONTACT_MAX_FILES = 5;
+const CONTACT_MAX_FILE_SIZE = 8 * 1024 * 1024;
+const CONTACT_ALLOWED_FILE_TYPES = new Set([
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/csv',
+  'text/plain',
+  'image/png',
+  'image/jpeg',
+  'application/octet-stream'
+]);
+const CONTACT_ALLOWED_FILE_EXTENSIONS = new Set(['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'png', 'jpg', 'jpeg']);
+
+function isAllowedContactFile(file: File) {
+  const extension = file.name.split('.').pop()?.toLowerCase() || '';
+  return CONTACT_ALLOWED_FILE_TYPES.has(file.type) && CONTACT_ALLOWED_FILE_EXTENSIONS.has(extension);
+}
+
+function formatFileSize(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
 function Header() {
@@ -684,40 +726,189 @@ function Pricing() {
   );
 }
 
-function DemoOrContacts({ page }: { page: 'demo' | 'contacts' }) {
-  const route = routes[page];
-  const [form, setForm] = useState({ company: '', name: '', email: '', phone: '', employees: '', message: '' });
-  const [msg, setMsg] = useState('');
+type DemoForm = {
+  company: string;
+  name: string;
+  email: string;
+  phone: string;
+  employees: string;
+  message: string;
+};
+
+type ContactForm = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  company: string;
+  subject: string;
+  message: string;
+};
+
+const emptyDemoForm: DemoForm = { company: '', name: '', email: '', phone: '', employees: '', message: '' };
+const emptyContactForm: ContactForm = { firstName: '', lastName: '', email: '', company: '', subject: '', message: '' };
+
+function DemoPage() {
+  const route = routes.demo;
+  const [form, setForm] = useState<DemoForm>(emptyDemoForm);
+  const [notice, setNotice] = useState<FormNotice>(null);
+  const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setMsg('');
+    setNotice(null);
+    setLoading(true);
     try {
-      await postJson('/api/leads/request-activation', { ...form, source: page });
-      setMsg('Richiesta inviata. Ti contatteremo a breve.');
-      setForm({ company: '', name: '', email: '', phone: '', employees: '', message: '' });
+      const data = await postJson('/api/leads/request-activation', { ...form, source: 'demo' });
+      sendGoogleAnalyticsEvent('request_demo_submitted', { event_category: 'lead', page_path: window.location.pathname });
+      setNotice({
+        type: data.mailNotified === false ? 'success' : 'success',
+        text: data.mailNotified === false
+          ? 'Richiesta ricevuta dal server, ma la notifica email non è stata confermata. Verifica configurazione SMTP e log della marketing API.'
+          : 'Richiesta demo inviata. Ti contatteremo a breve.'
+      });
+      setForm(emptyDemoForm);
     } catch (error: any) {
-      setMsg(error.message);
+      setNotice({ type: 'error', text: error.message || 'Non siamo riusciti a inviare la richiesta demo. Riprova tra poco.' });
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <>
-      <Hero page={page} />
+      <Hero page="demo" />
       <section className="section form-section">
         <form className="lead-form" onSubmit={submit}>
           <h2>{route.h1}</h2>
-          <p>Compila il form e raccontaci cosa vuoi migliorare: presenze, progetti, documenti, comunicazioni, report o gestione ruoli. Ti risponderemo con una proposta concreta.</p>
+          <p>Compila il form e raccontaci cosa vuoi migliorare: presenze, progetti, documenti, comunicazioni, report, Kanban Board, ruolo PM o gestione ruoli. Ti risponderemo con una proposta concreta.</p>
           <input required placeholder="Nome azienda" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
           <input required placeholder="Nome e cognome" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <input required type="email" placeholder="Email aziendale" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-          <input placeholder="Telefono" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-          <input placeholder="Numero dipendenti" value={form.employees} onChange={(e) => setForm({ ...form, employees: e.target.value })} />
-          <textarea placeholder="Raccontaci cosa vuoi gestire meglio" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+          <div className="form-row">
+            <input placeholder="Telefono" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <input placeholder="Numero dipendenti" value={form.employees} onChange={(e) => setForm({ ...form, employees: e.target.value })} />
+          </div>
+          <textarea placeholder="Raccontaci cosa vuoi vedere nella demo" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
           <label className="privacy-check"><input required type="checkbox" /> Ho letto la Privacy Policy e autorizzo il contatto commerciale.</label>
-          <button className="primary full">Invia richiesta</button>
-          {msg && <div className="notice">{msg}</div>}
+          <button className="primary full" disabled={loading}>{loading ? 'Invio richiesta demo...' : 'Invia richiesta demo'}</button>
+          {notice && <div className={`notice ${notice.type}`}>{notice.text}</div>}
         </form>
+      </section>
+    </>
+  );
+}
+
+function ContactPage() {
+  const route = routes.contacts;
+  const [form, setForm] = useState<ContactForm>(emptyContactForm);
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileInputKey, setFileInputKey] = useState(0);
+  const [notice, setNotice] = useState<FormNotice>(null);
+  const [loading, setLoading] = useState(false);
+
+  function updateFiles(list: FileList | null) {
+    const selected = Array.from(list || []);
+    if (!selected.length) {
+      setFiles([]);
+      return;
+    }
+
+    if (selected.length > CONTACT_MAX_FILES) {
+      setNotice({ type: 'error', text: `Puoi allegare al massimo ${CONTACT_MAX_FILES} documenti.` });
+      setFiles([]);
+      setFileInputKey((value) => value + 1);
+      return;
+    }
+
+    const invalid = selected.find((file) => !isAllowedContactFile(file) || file.size > CONTACT_MAX_FILE_SIZE);
+    if (invalid) {
+      setNotice({
+        type: 'error',
+        text: `Il file “${invalid.name}” non è valido. Usa PDF, Word, Excel, CSV, TXT, PNG o JPG fino a 8 MB per file.`
+      });
+      setFiles([]);
+      setFileInputKey((value) => value + 1);
+      return;
+    }
+
+    setNotice(null);
+    setFiles(selected);
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setNotice(null);
+    setLoading(true);
+
+    try {
+      const payload = new FormData();
+      Object.entries(form).forEach(([key, value]) => payload.append(key, value));
+      payload.append('source', 'contatti');
+      files.forEach((file) => payload.append('documents', file));
+
+      const data = await postFormData('/api/contacts/request', payload);
+      sendGoogleAnalyticsEvent('contact_form_submitted', { event_category: 'lead', page_path: window.location.pathname, attachments: files.length });
+      setNotice({
+        type: 'success',
+        text: data.mailNotified === false
+          ? 'Messaggio ricevuto dal server, ma la notifica email non è stata confermata. Verifica configurazione SMTP e log della marketing API.'
+          : 'Messaggio inviato correttamente. Ti risponderemo appena possibile.'
+      });
+      setForm(emptyContactForm);
+      setFiles([]);
+      setFileInputKey((value) => value + 1);
+    } catch (error: any) {
+      setNotice({ type: 'error', text: error.message || 'Non siamo riusciti a inviare il messaggio. Riprova tra poco.' });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <Hero page="contacts" />
+      <section className="section contact-section">
+        <div className="contact-layout">
+          <form className="lead-form contact-form" onSubmit={submit} encType="multipart/form-data">
+            <h2>{route.h1}</h2>
+            <p>Scrivici per informazioni su demo, piani SaaS, gestione team aziendale, presenze, progetti, documenti, Kanban Board, ruolo PM o attivazione della tua azienda.</p>
+            <div className="form-row">
+              <input required placeholder="Nome" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
+              <input required placeholder="Cognome" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
+            </div>
+            <input required type="email" placeholder="Email aziendale" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            <input required placeholder="Azienda" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
+            <input required placeholder="Oggetto" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} />
+            <textarea required placeholder="Testo del messaggio" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+            <label className="file-upload">
+              <span><FileText size={18} /> Allegati opzionali</span>
+              <small>Puoi caricare fino a 5 documenti: PDF, Word, Excel, CSV, TXT, PNG o JPG. Massimo 8 MB per file.</small>
+              <input key={fileInputKey} type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg" onChange={(e) => updateFiles(e.target.files)} />
+            </label>
+            {files.length > 0 && (
+              <div className="file-list" aria-label="Documenti allegati selezionati">
+                {files.map((file) => (
+                  <span key={`${file.name}-${file.size}`}>{file.name} · {formatFileSize(file.size)}</span>
+                ))}
+              </div>
+            )}
+            <label className="privacy-check"><input required type="checkbox" /> Ho letto la Privacy Policy e autorizzo il trattamento dei dati per ricevere risposta alla richiesta.</label>
+            <button className="primary full" disabled={loading}>{loading ? 'Invio messaggio...' : 'Invia messaggio'}</button>
+            {notice && <div className={`notice ${notice.type}`}>{notice.text}</div>}
+          </form>
+          <aside className="contact-card" aria-label="Informazioni di contatto">
+            <div className="icon"><MessageSquareText /></div>
+            <h2>Quando usare Contattaci</h2>
+            <p>Usa questa sezione per richieste commerciali, chiarimenti sui piani, domande su PMI, cooperative, gestione presenze e progetti, oppure per inviare documenti utili alla valutazione.</p>
+            <ul>
+              <li><CheckCircle2 /> Richieste generiche e commerciali</li>
+              <li><CheckCircle2 /> Domande su piani Starter, Team e Business</li>
+              <li><CheckCircle2 /> Documenti opzionali a supporto della richiesta</li>
+              <li><CheckCircle2 /> Risposta via email al referente indicato</li>
+            </ul>
+            <a className="secondary full" href="/demo">Preferisci una demo guidata?</a>
+          </aside>
+        </div>
       </section>
     </>
   );
@@ -1013,7 +1204,7 @@ function Footer() {
       <div className="footer-columns">
         <div>
           <h3>Prodotto</h3>
-          <a href="/funzionalita">Funzionalità</a><a href="/prezzi">Prezzi</a><a href="/demo">Demo</a><a href="/blog">Blog</a>
+          <a href="/funzionalita">Funzionalità</a><a href="/prezzi">Prezzi</a><a href="/demo">Demo</a><a href="/contatti">Contatti</a><a href="/blog">Blog</a>
         </div>
         <div>
           <h3>Soluzioni</h3>
@@ -1056,7 +1247,8 @@ export default function App() {
     if (page === 'home') return <Home />;
     if (page === 'features') return <Features />;
     if (page === 'pricing') return <Pricing />;
-    if (page === 'demo' || page === 'contacts') return <DemoOrContacts page={page} />;
+    if (page === 'demo') return <DemoPage />;
+    if (page === 'contacts') return <ContactPage />;
     if (page === 'presence' || page === 'projects' || page === 'cooperatives' || page === 'agencies' || page === 'schools') return <Vertical page={page} />;
     if (page === 'blog') return <BlogList />;
     return <Legal page={page as LegalPageKey} />;

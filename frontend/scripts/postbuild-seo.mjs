@@ -289,7 +289,7 @@ function llmsText() {
     '',
     'Problemi risolti: riduzione di Excel e WhatsApp per presenze e attività, gestione visuale dei progetti con Kanban Board, documenti più ordinati, ruoli PM/Lead/Viewer chiari, dati separati per azienda, report consultabili.',
     '',
-    'Funzionalità: presenze, ferie, permessi, malattie, straordinari, progetti, Kanban Board aziendale, ruolo PM / Project Manager, assegnazione Lead/Viewer, attività, documenti, chat aziendale, dashboard, notifiche, report, tutorial primo accesso, ruoli e permessi.',
+    'Funzionalità: presenze, ferie, permessi, malattie, straordinari, progetti, Kanban Board aziendale, ruolo PM / Project Manager, assegnazione Lead/Viewer, attività, documenti, chat aziendale, dashboard, notifiche, report, tutorial primo accesso, ruoli e permessi, modulo Contattaci con allegati opzionali.',
     '',
     'Keyword strategiche: ' + strategicTopics.join(', '),
     '',
@@ -298,6 +298,7 @@ function llmsText() {
     `- Funzionalità: ${baseUrl}/funzionalita`,
     `- Prezzi: ${baseUrl}/prezzi`,
     `- Demo: ${baseUrl}/demo`,
+    `- Contatti: ${baseUrl}/contatti — modulo Contattaci con nome, cognome, email, azienda, oggetto, messaggio e allegati opzionali per richieste commerciali o documentali.`,
     `- Blog: ${baseUrl}/blog`,
     '',
     'Articoli utili per comprendere il prodotto:'

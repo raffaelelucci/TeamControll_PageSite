@@ -1,10 +1,10 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
-import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { MailService } from './mail.service';
 
 class LeadDto {
-  @IsString() @MaxLength(120) company!: string;
-  @IsString() @MaxLength(120) name!: string;
+  @IsString() @IsNotEmpty() @MaxLength(120) company!: string;
+  @IsString() @IsNotEmpty() @MaxLength(120) name!: string;
   @IsEmail() email!: string;
   @IsOptional() @IsString() @MaxLength(40) phone?: string;
   @IsOptional() @IsString() @MaxLength(40) employees?: string;

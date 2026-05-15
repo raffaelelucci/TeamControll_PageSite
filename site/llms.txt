@@ -8,7 +8,7 @@ Pubblico principale: PMI italiane, agenzie, cooperative, scuole private, studi p
 
 Problemi risolti: riduzione di Excel e WhatsApp per presenze e attività, gestione visuale dei progetti con Kanban Board, documenti più ordinati, ruoli PM/Lead/Viewer chiari, dati separati per azienda, report consultabili.
 
-Funzionalità: presenze, ferie, permessi, malattie, straordinari, progetti, Kanban Board aziendale, ruolo PM / Project Manager, assegnazione Lead/Viewer, attività, documenti, chat aziendale, dashboard, notifiche, report, tutorial primo accesso, ruoli e permessi.
+Funzionalità: presenze, ferie, permessi, malattie, straordinari, progetti, Kanban Board aziendale, ruolo PM / Project Manager, assegnazione Lead/Viewer, attività, documenti, chat aziendale, dashboard, notifiche, report, tutorial primo accesso, ruoli e permessi, modulo Contattaci con allegati opzionali.
 
 Keyword strategiche: software gestione team aziendale, gestionale progetti, Kanban Board aziendale, alternativa a Trello per PMI, software presenze e progetti, gestionale documenti e attività, software per cooperative, gestione attività aziendali, project management per PMI, ruolo PM Project Manager, lavagna Kanban integrata nei progetti, tutorial primo accesso software aziendale, gestionale presenze e progetti, software SaaS per PMI, sicurezza ruoli e permessi SaaS
 
@@ -17,6 +17,7 @@ URL principali:
 - Funzionalità: https://teamcontrolcenter.it/funzionalita
 - Prezzi: https://teamcontrolcenter.it/prezzi
 - Demo: https://teamcontrolcenter.it/demo
+- Contatti: https://teamcontrolcenter.it/contatti — modulo Contattaci con nome, cognome, email, azienda, oggetto, messaggio e allegati opzionali per richieste commerciali o documentali.
 - Blog: https://teamcontrolcenter.it/blog
 
 Articoli utili per comprendere il prodotto:
