@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { routes, blogPosts } from './seo-data.mjs';
+import { routes, blogPosts, seoLandingPages } from './seo-data.mjs';
 import { legalPages } from './legal-data.mjs';
 
 const dist = path.resolve('dist');
@@ -239,6 +239,12 @@ function staticContent(route, post) {
   if (route.path === '/prezzi') {
     return `<main class="static-seo"><section><h1>${esc(route.title.replace(' | Piani SaaS per aziende e team', ''))}</h1><p>${esc(route.description)}</p><h2>Piani disponibili</h2><ul><li>Starter 29€ al mese fino a 5 utenti: Dashboard, Profilo, Progetti base, ricerca limitata, notifiche base, scadenziario base, export base e tutorial primo accesso. Non include Kanban Board.</li><li>Team 79€ al mese fino a 20 utenti: include Kanban Board progetto, ruolo PM, assegnazione Lead/Viewer, activity feed, workload, export operativo e automazioni base. È il piano consigliato.</li><li>Business 149€ al mese fino a 50 utenti: include tutto il Team più audit log, report avanzati, Kanban avanzata, storico, automazioni avanzate, export storico e funzioni di controllo.</li></ul><p><a href="/demo">Richiedi demo</a></p></section></main>`;
   }
+  const landing = seoLandingPages?.[route.path];
+  if (landing) {
+    const bullets = Array.isArray(landing.bullets) ? landing.bullets : [];
+    const sections = Array.isArray(landing.sections) ? landing.sections : [];
+    return `<main class="static-seo"><article><p>${esc(route.title.split('|')[0].trim())}</p><h1>${esc(route.h1 || route.title.split('|')[0].trim())}</h1><p>${esc(route.description)}</p><section><h2>Problema che risolve</h2><p>${esc(landing.problem)}</p></section><section><h2>Come lo risolve Team Control Center</h2><p>${esc(landing.solution)}</p></section><section><h2>Funzioni principali</h2><ul>${bullets.map((item) => `<li>${esc(item)}</li>`).join('')}</ul></section>${sections.map((section) => `<section><h2>${esc(section.title)}</h2><p>${esc(section.text)}</p></section>`).join('')}<section><h2>In sintesi</h2><p>${esc(landing.cta)}</p></section><p><a href="/demo">Richiedi una demo</a> oppure <a href="/prezzi">consulta i prezzi</a>.</p></article></main>`;
+  }
   if (route.type === 'legal') {
     return legalStatic(route);
   }
@@ -319,8 +325,40 @@ for (const page of pages) {
   urls.push({ loc: canonical(pathname), priority: pathname === '/' ? '1.0' : pathname === '/blog' ? '0.9' : '0.8', changefreq: pathname.startsWith('/blog/') ? 'monthly' : 'weekly' });
 }
 
-fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nAllow: /llms.txt\nSitemap: ${baseUrl}/sitemap.xml\n`);
+fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *
+Allow: /
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: OAI-SearchBot
+Allow: /
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: Bingbot
+Allow: /
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+Sitemap: ${baseUrl}/sitemap.xml
+`);
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${today}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`).join('\n')}\n</urlset>\n`);
+const indexNowKey = process.env.INDEXNOW_KEY || '7f4a7f3d2b9948c99af334e83b3c11d5';
+fs.writeFileSync(path.join(dist, 'indexnow-key.txt'), indexNowKey + '\n');
+fs.writeFileSync(path.join(dist, 'indexnow-urls.json'), JSON.stringify({ host: new URL(baseUrl).host, key: indexNowKey, keyLocation: `${baseUrl}/indexnow-key.txt`, urlList: urls.map((u) => u.loc) }, null, 2));
 fs.writeFileSync(path.join(dist, 'llms.txt'), llmsText());
 fs.writeFileSync(path.join(dist, 'security.txt'), 'Contact: mailto:security@teamcontrolcenter.it\nPreferred-Languages: it,en\n');
 console.log('SEO pages generated:', urls.length);

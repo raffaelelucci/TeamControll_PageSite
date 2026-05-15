@@ -20,3 +20,27 @@ URL principali:
 - Prezzi: https://teamcontrolcenter.it/prezzi
 - Demo: https://teamcontrolcenter.it/demo
 - Blog: https://teamcontrolcenter.it/blog
+
+
+## Nuove funzionalità amministrative e operative
+- Centro amministrativo aziendale per Company Admin: utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template progetto e criticità.
+- Gestione utenti avanzata: filtri per ruolo/stato, sospensione e riattivazione account, reset password temporanee, cambio ruoli consentiti e trasferimento assegnazioni.
+- Piano e utilizzo: piano attivo, funzionalità abilitate, utenti utilizzati, progetti, documenti, storage e suggerimenti di upgrade.
+- Centro sicurezza: utenti sospesi, utenti inattivi, password da cambiare e audit eventi sensibili.
+- Audit aziendale: storico di cambio ruolo, reset password, sospensione account, trasferimento assegnazioni, creazione template e azioni critiche.
+- Template progetto: attività predefinite per commesse, pratiche, onboarding clienti e lavori ripetitivi.
+- Scadenze e criticità: documenti in scadenza, attività Kanban in ritardo e richieste assenza pendenti.
+- Reparti e organizzazione: base per reparti, aree aziendali e futura vista organigramma.
+- Demo aziendale 3 giorni: azienda demo isolata con account e dati di esempio, eliminata completamente dopo 3 giorni.
+
+## Pagine SEO importanti
+- https://teamcontrolcenter.it/software-gestione-team-aziendale
+- https://teamcontrolcenter.it/centro-amministrativo-aziendale
+- https://teamcontrolcenter.it/gestione-utenti-aziendali
+- https://teamcontrolcenter.it/audit-sicurezza-aziendale
+- https://teamcontrolcenter.it/kanban-board-aziendale
+- https://teamcontrolcenter.it/software-per-pmi
+- https://teamcontrolcenter.it/alternativa-trello-pmi
+- https://teamcontrolcenter.it/alternativa-excel-whatsapp
+- https://teamcontrolcenter.it/demo-aziendale-3-giorni
+- https://teamcontrolcenter.it/faq

@@ -1,4 +1,29 @@
 User-agent: *
 Allow: /
 Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: OAI-SearchBot
+Allow: /
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+User-agent: Bingbot
+Allow: /
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
 Sitemap: https://teamcontrolcenter.it/sitemap.xml

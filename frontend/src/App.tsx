@@ -34,6 +34,7 @@ import {
   plans,
   routes,
   seoFaqs,
+  landingDetails,
   verticalDetails,
   PageKey,
   BlogPost
@@ -51,6 +52,14 @@ const nav = [
 ];
 
 const solutionNav = [
+  ['/software-gestione-team-aziendale', 'Gestione team aziendale'],
+  ['/centro-amministrativo-aziendale', 'Centro amministrativo'],
+  ['/gestione-utenti-aziendali', 'Gestione utenti'],
+  ['/audit-sicurezza-aziendale', 'Audit e sicurezza'],
+  ['/kanban-board-aziendale', 'Kanban Board aziendale'],
+  ['/software-per-pmi', 'PMI'],
+  ['/alternativa-excel-whatsapp', 'Alternativa Excel e WhatsApp'],
+  ['/demo-aziendale-3-giorni', 'Demo 3 giorni'],
   ['/software-gestione-presenze-dipendenti', 'Presenze dipendenti'],
   ['/software-gestione-progetti-team', 'Progetti e team'],
   ['/software-per-cooperative', 'Cooperative'],
@@ -914,6 +923,49 @@ function ContactPage() {
   );
 }
 
+
+function SeoLanding({ page }: { page: keyof typeof landingDetails }) {
+  const details = landingDetails[page];
+  const route = routes[page];
+  return (
+    <>
+      <Hero page={page} />
+      <section className="section intro-section">
+        <div className="section-head">
+          <p>{route.kicker}</p>
+          <h2>{details.problem}</h2>
+        </div>
+        <div className="rich-copy">
+          <p>{details.solution}</p>
+          <p>{details.cta}</p>
+        </div>
+      </section>
+      <section className="section soft-section">
+        <div className="section-head">
+          <p>Cosa rende utile questa soluzione</p>
+          <h2>Funzioni e concetti chiave collegati alla ricerca</h2>
+        </div>
+        <div className="cards small-cards">
+          {details.bullets.map((bullet) => (
+            <article className="card" key={bullet}><CheckCircle2 /><h3>{bullet}</h3><p>Elemento utile per migliorare gestione operativa, controllo aziendale e semplicità di adozione.</p></article>
+          ))}
+        </div>
+      </section>
+      <section className="article-content landing-article">
+        {details.sections.map((section) => (
+          <section key={section.title}>
+            <h2>{section.title}</h2>
+            <p>{section.text}</p>
+          </section>
+        ))}
+      </section>
+      {page === 'faq' && <FaqSection />}
+      <BlogPreview />
+      <CTA />
+    </>
+  );
+}
+
 function Vertical({ page }: { page: 'presence' | 'projects' | 'cooperatives' | 'agencies' | 'schools' }) {
   const details = verticalDetails[page];
   return (
@@ -1249,6 +1301,7 @@ export default function App() {
     if (page === 'pricing') return <Pricing />;
     if (page === 'demo') return <DemoPage />;
     if (page === 'contacts') return <ContactPage />;
+    if (page in landingDetails) return <SeoLanding page={page as keyof typeof landingDetails} />;
     if (page === 'presence' || page === 'projects' || page === 'cooperatives' || page === 'agencies' || page === 'schools') return <Vertical page={page} />;
     if (page === 'blog') return <BlogList />;
     return <Legal page={page as LegalPageKey} />;

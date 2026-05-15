@@ -16,10 +16,562 @@ export const routes = {
   dpa: { path: '/dpa', title: 'Data Processing Agreement esteso | Team Control Center', description: 'DPA esteso per clienti aziendali Team Control Center: ruoli privacy, istruzioni, misure tecniche e organizzative, sub-responsabili, data breach, cancellazione e audit.', keywords: ['DPA SaaS','responsabile trattamento software','GDPR Team Control Center'], type: 'legal' },
   security: { path: '/sicurezza', title: 'Sicurezza del servizio | Team Control Center', description: 'Politica di sicurezza Team Control Center: separazione dati aziendali, ruoli, accessi, backup, log, incident response, vulnerabilità e responsabilità condivisa.', keywords: ['sicurezza SaaS','sicurezza software aziendale','ruoli e permessi'], type: 'legal' },
   subprocessors: { path: '/sub-responsabili', title: 'Sub-responsabili e fornitori | Team Control Center', description: 'Elenco informativo delle categorie di sub-responsabili e fornitori Team Control Center: hosting, pagamenti, email, DNS, sicurezza, analytics e supporto.', keywords: ['sub-responsabili SaaS','fornitori Team Control Center','subprocessor GDPR'], type: 'legal' },
-  refunds: { path: '/recesso-rimborsi', title: 'Recesso, cancellazione e rimborsi | Team Control Center', description: 'Regole su cancellazione abbonamento, rinnovi, mancato pagamento, recesso, rimborsi, esportazione dati e cessazione del servizio Team Control Center.', keywords: ['recesso SaaS','cancellazione abbonamento software','rimborsi Team Control Center'], type: 'legal' }
+  refunds: { path: '/recesso-rimborsi', title: 'Recesso, cancellazione e rimborsi | Team Control Center', description: 'Regole su cancellazione abbonamento, rinnovi, mancato pagamento, recesso, rimborsi, esportazione dati e cessazione del servizio Team Control Center.', keywords: ['recesso SaaS','cancellazione abbonamento software','rimborsi Team Control Center'], type: 'legal' },
+  softwareTeam: {
+    "path": "/software-gestione-team-aziendale",
+    "title": "Software gestione team aziendale | PMI, ruoli, progetti, Kanban e controllo",
+    "description": "Team Control Center è un software gestione team aziendale per PMI italiane: dashboard, ruoli, presenze, progetti, Kanban Board, documenti, audit, sicurezza e centro amministrativo.",
+    "h1": "Software gestione team aziendale per PMI che vogliono controllo, semplicità e operatività",
+    "kicker": "Pagina SEO pillar",
+    "keywords": [
+        "software gestione team aziendale",
+        "gestionale per PMI",
+        "gestione attività aziendali",
+        "software presenze e progetti",
+        "gestionale documenti e attività",
+        "piattaforma SaaS per aziende italiane"
+    ],
+    "type": "webpage"
+},
+  kanbanBoardSeo: {
+    "path": "/kanban-board-aziendale",
+    "title": "Kanban Board aziendale | Lavagna Kanban integrata nei progetti",
+    "description": "Kanban Board aziendale integrata nei progetti: Backlog, Da fare, In corso, In revisione, Bloccato e Fatto, con PM, Lead e Viewer per PMI italiane.",
+    "h1": "Kanban Board aziendale integrata nei progetti, semplice da usare e sicura",
+    "kicker": "Gestione visuale attività",
+    "keywords": [
+        "Kanban Board aziendale",
+        "Kanban Board stile Trello",
+        "lavagna Kanban integrata nei progetti",
+        "gestione visuale delle attività",
+        "alternativa Trello PMI"
+    ],
+    "type": "webpage"
+},
+  presenzeProgettiDocumenti: {
+    "path": "/software-presenze-progetti-documenti",
+    "title": "Software presenze, progetti e documenti | Un unico gestionale operativo",
+    "description": "Unifica presenze, progetti, documenti, attività, scadenze, Kanban, ruoli e report con un software gestionale operativo per PMI e cooperative.",
+    "h1": "Software per gestire presenze, progetti e documenti senza strumenti separati",
+    "kicker": "Presenze, progetti e documenti",
+    "keywords": [
+        "software presenze e progetti",
+        "gestionale documenti e attività",
+        "software gestione team",
+        "gestione documenti aziendali",
+        "gestionale progetti"
+    ],
+    "type": "webpage"
+},
+  softwarePmi: {
+    "path": "/software-per-pmi",
+    "title": "Software gestionale per PMI | Team, utenti, progetti, Kanban, audit e sicurezza",
+    "description": "Software gestionale per PMI italiane con gestione utenti, progetti, documenti, Kanban Board, presenze, audit, sicurezza e centro amministrativo aziendale.",
+    "h1": "Software gestionale per PMI che vogliono organizzare persone, progetti e controllo aziendale",
+    "kicker": "Soluzione per PMI italiane",
+    "keywords": [
+        "software gestionale aziendale",
+        "gestionale per PMI",
+        "software project management PMI",
+        "centro amministrativo aziendale",
+        "audit aziendale software"
+    ],
+    "type": "webpage"
+},
+  alternativaTrelloPmi: {
+    "path": "/alternativa-trello-pmi",
+    "title": "Alternativa semplice a Trello per PMI | Kanban integrata nel gestionale aziendale",
+    "description": "Team Control Center offre una Kanban Board stile Trello integrata in un gestionale aziendale con ruoli, documenti, presenze, audit e controllo per PMI.",
+    "h1": "Alternativa semplice a Trello per PMI che vogliono anche gestione aziendale e controllo operativo",
+    "kicker": "Confronto e alternativa",
+    "keywords": [
+        "alternativa Trello PMI",
+        "Kanban Board stile Trello",
+        "gestione visuale delle attività",
+        "gestionale progetti",
+        "software project management PMI"
+    ],
+    "type": "webpage"
+},
+  alternativaExcelWhatsapp: {
+    "path": "/alternativa-excel-whatsapp",
+    "title": "Alternativa a Excel e WhatsApp per gestire team, attività, documenti e presenze",
+    "description": "Scopri come sostituire fogli Excel, chat WhatsApp e cartelle sparse con un software gestione team aziendale per PMI, cooperative e aziende operative.",
+    "h1": "Alternativa a Excel e WhatsApp per gestire attività aziendali, presenze e documenti",
+    "kicker": "Da strumenti sparsi a piattaforma unica",
+    "keywords": [
+        "alternativa Excel WhatsApp",
+        "software gestione team",
+        "gestione attività aziendali",
+        "gestionale documenti e attività",
+        "software presenze e progetti"
+    ],
+    "type": "webpage"
+},
+  faq: {
+    "path": "/faq",
+    "title": "FAQ Team Control Center | Software gestione team, PMI, Kanban, audit e demo",
+    "description": "Domande frequenti su Team Control Center: software gestionale per PMI, ruoli, PM, Kanban Board, centro amministrativo, audit, sicurezza, piani e demo aziendale 3 giorni.",
+    "h1": "Domande frequenti su Team Control Center",
+    "kicker": "FAQ per PMI e aziende",
+    "keywords": [
+        "FAQ Team Control Center",
+        "software gestione team aziendale",
+        "gestionale per PMI",
+        "Kanban Board aziendale",
+        "demo SaaS aziendale"
+    ],
+    "type": "webpage"
+},
+  companyAdminCenter: {
+    "path": "/centro-amministrativo-aziendale",
+    "title": "Centro amministrativo aziendale | Company Admin, utenti, sicurezza, audit e utilizzo",
+    "description": "Il centro amministrativo aziendale di Team Control Center aiuta il Company Admin a controllare utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template e criticità.",
+    "h1": "Centro amministrativo aziendale per dare al Company Admin controllo operativo reale",
+    "kicker": "Controllo aziendale",
+    "keywords": [
+        "centro amministrativo aziendale",
+        "Company Admin",
+        "gestione utenti aziendali",
+        "audit aziendale software",
+        "sicurezza software aziendale"
+    ],
+    "type": "webpage"
+},
+  gestioneUtentiAziendali: {
+    "path": "/gestione-utenti-aziendali",
+    "title": "Gestione utenti aziendali | Ruoli, sospensioni, reset password e trasferimenti",
+    "description": "Gestione utenti aziendali avanzata per PMI: filtri per ruolo e stato, sospensione account, riattivazione, reset password temporanea, cambio ruolo e trasferimento assegnazioni.",
+    "h1": "Gestione utenti aziendali con ruoli chiari, sicurezza e trasferimento assegnazioni",
+    "kicker": "Utenti, ruoli e permessi",
+    "keywords": [
+        "gestione utenti aziendali",
+        "gestionale ruoli aziendali",
+        "reset password temporanea",
+        "trasferimento assegnazioni",
+        "software gestione team"
+    ],
+    "type": "webpage"
+},
+  auditSicurezzaAziendale: {
+    "path": "/audit-sicurezza-aziendale",
+    "title": "Audit e sicurezza aziendale | Eventi sensibili, utenti inattivi e controllo accessi",
+    "description": "Centro sicurezza e audit aziendale per monitorare utenti sospesi, utenti inattivi, password da cambiare, azioni critiche e storico operazioni amministrative.",
+    "h1": "Audit e sicurezza aziendale per controllare eventi sensibili e criticità operative",
+    "kicker": "Sicurezza e audit",
+    "keywords": [
+        "audit aziendale software",
+        "sicurezza software aziendale",
+        "centro sicurezza",
+        "utenti inattivi",
+        "controllo accessi aziendali"
+    ],
+    "type": "webpage"
+},
+  demoAziendaleTreGiorni: {
+    "path": "/demo-aziendale-3-giorni",
+    "title": "Demo SaaS aziendale 3 giorni | Azienda demo isolata con dati di esempio",
+    "description": "La demo di Team Control Center crea una vera azienda demo isolata con account e dati di esempio. Dura 3 giorni e poi viene eliminata con tutti i dati associati.",
+    "h1": "Demo aziendale di 3 giorni con ambiente isolato e dati di esempio",
+    "kicker": "Demo SaaS aziendale",
+    "keywords": [
+        "demo SaaS aziendale",
+        "demo software gestionale",
+        "azienda demo 3 giorni",
+        "prova Team Control Center",
+        "software gestionale per PMI"
+    ],
+    "type": "webpage"
+},
+  softwareProjectManagementPmi: {
+    "path": "/software-project-management-pmi",
+    "title": "Software project management per PMI | Progetti, PM, Kanban, documenti e report",
+    "description": "Software project management per PMI con ruolo PM, Kanban Board progetto, Lead e Viewer, documenti, scadenze, workload, activity feed e report operativi.",
+    "h1": "Software project management per PMI semplice, sicuro e collegato al lavoro quotidiano",
+    "kicker": "Project management per PMI",
+    "keywords": [
+        "software project management PMI",
+        "gestionale progetti",
+        "ruolo PM Project Manager",
+        "Kanban Board aziendale",
+        "gestione attività aziendali"
+    ],
+    "type": "webpage"
+},
+  gestionaleRuoliAziendali: {
+    "path": "/gestionale-ruoli-aziendali",
+    "title": "Gestionale ruoli aziendali | Company Admin, PM, Lead e Viewer",
+    "description": "Gestisci responsabilità e permessi con ruoli aziendali chiari: Company Admin, PM, Lead e Viewer, con perimetro dati separato per azienda e funzioni abilitate dal piano.",
+    "h1": "Gestionale ruoli aziendali per lavorare senza confusione tra permessi e responsabilità",
+    "kicker": "Ruoli aziendali",
+    "keywords": [
+        "gestionale ruoli aziendali",
+        "Company Admin",
+        "PM Lead Viewer",
+        "software gestione team",
+        "sicurezza ruoli aziendali"
+    ],
+    "type": "webpage"
+},
+  templateProgettoAziendale: {
+    "path": "/template-progetto-aziendale",
+    "title": "Template progetto aziendale | Attività predefinite per commesse, pratiche e onboarding",
+    "description": "Crea template progetto con attività predefinite per avviare più velocemente commesse, pratiche, onboarding clienti e lavori ripetitivi dentro Team Control Center.",
+    "h1": "Template progetto aziendale per avviare commesse e attività ricorrenti più velocemente",
+    "kicker": "Template e standard operativi",
+    "keywords": [
+        "template progetto",
+        "template progetto aziendale",
+        "commesse aziendali",
+        "onboarding clienti",
+        "gestione attività aziendali"
+    ],
+    "type": "webpage"
+},
+
 };
 
 export const blogPosts = [
+  {
+    "slug": "centro-amministrativo-aziendale-company-admin-controllo-operativo",
+    "title": "Centro amministrativo aziendale: perché il Company Admin ha bisogno di controllo operativo",
+    "description": "Guida al centro amministrativo aziendale di Team Control Center: utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template progetto e criticità per PMI italiane.",
+    "date": "2026-05-15",
+    "readTime": "16 min",
+    "category": "Amministrazione aziendale",
+    "author": "Team Control Center",
+    "h1": "Centro amministrativo aziendale: perché il Company Admin ha bisogno di controllo operativo",
+    "intro": "Il Company Admin non deve soltanto creare utenti. In una PMI che cresce, il controllo aziendale passa da utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template progetto e criticità operative. Per questo Team Control Center introduce una sezione Amministrazione pensata come centro di controllo aziendale.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "Il centro amministrativo aziendale di Team Control Center permette al Company Admin di controllare utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template progetto e criticità. È pensato per PMI italiane che vogliono un gestionale semplice, ma con controllo operativo reale."
+        },
+        {
+            "title": "Perché il Company Admin ha bisogno di una sezione dedicata",
+            "text": "Quando l’azienda usa più strumenti separati, le informazioni amministrative restano sparse: un elenco utenti in un posto, il piano in un altro, le scadenze in una cartella e le criticità in messaggi informali. Una sezione Amministrazione riduce questa dispersione e rende più chiaro cosa richiede attenzione."
+        },
+        {
+            "title": "Utenti, ruoli e piano",
+            "text": "Il Company Admin può leggere lo stato degli utenti, controllare ruoli, capire quali funzionalità sono abilitate dal piano e verificare utilizzo di utenti, progetti, documenti e storage. Questo aiuta a gestire crescita e upgrade in modo più consapevole."
+        },
+        {
+            "title": "Sicurezza e audit",
+            "text": "Il centro sicurezza evidenzia utenti sospesi, utenti inattivi e password da cambiare. L’audit aziendale conserva le operazioni amministrative importanti, come cambio ruolo, reset password, sospensione account, trasferimento assegnazioni e creazione template."
+        },
+        {
+            "title": "Template, scadenze e criticità",
+            "text": "I template progetto aiutano a standardizzare lavori ripetitivi, mentre la vista criticità raccoglie documenti in scadenza, attività Kanban in ritardo e richieste assenza pendenti. Il controllo diventa più operativo e meno frammentato."
+        },
+        {
+            "title": "Keyword e intenti intercettati",
+            "text": "Questa funzionalità intercetta ricerche come centro amministrativo aziendale, gestione utenti aziendali, audit aziendale software, software gestionale aziendale e gestionale per PMI."
+        }
+    ],
+    "takeaway": "Un centro amministrativo aziendale rende il Company Admin più efficace perché unisce controllo utenti, piano, sicurezza, audit, template e criticità in una sola area operativa.",
+    "keywords": [
+        "centro amministrativo aziendale",
+        "Company Admin",
+        "gestione utenti aziendali",
+        "audit aziendale software",
+        "gestionale per PMI",
+        "software gestionale aziendale"
+    ]
+},
+  {
+    "slug": "software-gestionale-pmi-utenti-progetti-documenti-kanban-audit",
+    "title": "Software gestionale per PMI: utenti, progetti, documenti, Kanban e audit in un’unica piattaforma",
+    "description": "Come scegliere un software gestionale per PMI con utenti, progetti, documenti, Kanban Board aziendale, centro amministrativo, audit e sicurezza.",
+    "date": "2026-05-15",
+    "readTime": "17 min",
+    "category": "PMI e SaaS",
+    "author": "Team Control Center",
+    "h1": "Software gestionale per PMI: utenti, progetti, documenti, Kanban e audit in un’unica piattaforma",
+    "intro": "Una PMI non ha bisogno di una piattaforma enorme e difficile da adottare, ma non può nemmeno basare tutto su file Excel, WhatsApp e cartelle sparse. Serve un software gestionale aziendale capace di collegare utenti, progetti, documenti, attività, Kanban, audit e sicurezza in modo semplice.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "Team Control Center è un software gestionale per PMI che centralizza utenti, ruoli, progetti, documenti, Kanban Board, presenze, scadenze, audit, sicurezza e centro amministrativo. È pensato per aziende italiane che vogliono controllo senza complessità enterprise."
+        },
+        {
+            "title": "Utenti e ruoli",
+            "text": "La gestione utenti avanzata consente al Company Admin di filtrare persone per ruolo o stato, sospendere o riattivare account, resettare password temporanee, cambiare ruoli consentiti e trasferire assegnazioni."
+        },
+        {
+            "title": "Progetti e Kanban",
+            "text": "Il piano Team include PM / Project Manager e Kanban Board progetto. Il PM può creare, modificare, assegnare e spostare card; Lead e Viewer vedono dettagli e stato in sola lettura."
+        },
+        {
+            "title": "Documenti e scadenze",
+            "text": "Documenti e attività restano collegati al lavoro. La vista criticità aiuta a leggere documenti in scadenza, attività Kanban in ritardo e richieste assenza pendenti."
+        },
+        {
+            "title": "Audit e sicurezza",
+            "text": "Nel piano Business l’audit completo e la sicurezza avanzata aiutano la direzione a ricostruire operazioni sensibili e monitorare eventi amministrativi importanti."
+        },
+        {
+            "title": "Piani coerenti con la crescita",
+            "text": "Starter è utile per iniziare, Team è consigliato per PMI strutturate, Business aggiunge controllo direzionale, storico, audit completo e automazioni avanzate."
+        }
+    ],
+    "takeaway": "Un buon software gestionale per PMI deve unire semplicità, controllo, sicurezza e gestione operativa: utenti, progetti, documenti, Kanban e audit devono lavorare insieme.",
+    "keywords": [
+        "software gestionale aziendale",
+        "gestionale per PMI",
+        "software gestione team",
+        "Kanban Board aziendale",
+        "audit aziendale software",
+        "gestione documenti aziendali"
+    ]
+},
+  {
+    "slug": "gestire-ruoli-aziendali-pm-lead-viewer-senza-confusione",
+    "title": "Come gestire ruoli aziendali, PM, Lead e Viewer senza confusione",
+    "description": "Guida alla gestione dei ruoli aziendali in Team Control Center: Company Admin, PM, Lead e Viewer con perimetro dati, permessi e visibilità controllata.",
+    "date": "2026-05-15",
+    "readTime": "14 min",
+    "category": "Ruoli aziendali",
+    "author": "Team Control Center",
+    "h1": "Come gestire ruoli aziendali, PM, Lead e Viewer senza confusione",
+    "intro": "Un gestionale ruoli aziendali funziona quando ogni persona vede e modifica solo ciò che serve. Troppi permessi creano rischio, pochi permessi bloccano il lavoro. Team Control Center organizza Company Admin, PM, Lead e Viewer con un perimetro dati chiaro.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "Team Control Center separa Company Admin, PM / Project Manager, Lead e Viewer. Il Company Admin governa azienda e amministrazione, il PM coordina progetti e Kanban, Lead e Viewer consultano la board in sola lettura secondo il proprio perimetro."
+        },
+        {
+            "title": "Company Admin",
+            "text": "Il Company Admin controlla utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template progetto e criticità aziendali. È il ruolo di governo dell’azienda."
+        },
+        {
+            "title": "PM / Project Manager",
+            "text": "Il PM lavora nel perimetro aziendale, vede Dashboard, Progetti e Profilo e può associare Lead e Viewer a progetti e attività. Sulla Kanban Board gestisce card, priorità, scadenze e assegnatari."
+        },
+        {
+            "title": "Lead e Viewer",
+            "text": "Lead e Viewer vedono la board in sola lettura: possono consultare dettagli e stato, ma non possono creare, modificare o spostare attività. Questo protegge il flusso operativo."
+        },
+        {
+            "title": "Piano e perimetro",
+            "text": "Le funzionalità sono filtrate per azienda, ruolo, utente e piano abbonamento. Nessun utente vede dati di aziende diverse."
+        }
+    ],
+    "takeaway": "Ruoli chiari riducono errori e confusione: Company Admin governa, PM coordina, Lead e Viewer consultano secondo responsabilità definite.",
+    "keywords": [
+        "gestionale ruoli aziendali",
+        "PM Lead Viewer",
+        "Company Admin",
+        "software gestione team",
+        "sicurezza ruoli aziendali",
+        "gestione utenti aziendali"
+    ]
+},
+  {
+    "slug": "kanban-board-aziendale-alternativa-semplice-integrata-strumenti-separati",
+    "title": "Kanban Board aziendale: alternativa semplice e integrata agli strumenti separati",
+    "description": "Perché una Kanban Board aziendale integrata nei progetti è più utile di strumenti separati per PMI che gestiscono attività, documenti, ruoli e scadenze.",
+    "date": "2026-05-15",
+    "readTime": "15 min",
+    "category": "Kanban e progetti",
+    "author": "Team Control Center",
+    "h1": "Kanban Board aziendale: alternativa semplice e integrata agli strumenti separati",
+    "intro": "Una Kanban Board aziendale è davvero utile quando non resta isolata. Se la lavagna non comunica con progetti, ruoli, documenti e scadenze, l’azienda rischia di avere un altro strumento da controllare. Team Control Center integra la gestione visuale delle attività dentro il progetto.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "Team Control Center offre una Kanban Board stile Trello integrata nei progetti. Il PM gestisce attività, stati, priorità, scadenze, assegnatari e documenti progetto; Lead e Viewer consultano in sola lettura."
+        },
+        {
+            "title": "Il limite degli strumenti separati",
+            "text": "Una board separata può essere comoda, ma se documenti, ruoli e scadenze restano altrove, il responsabile deve comunque ricostruire il contesto."
+        },
+        {
+            "title": "Gestione visuale delle attività",
+            "text": "Le colonne Backlog, Da fare, In corso, In revisione, Bloccato e Fatto rendono immediato lo stato del lavoro e aiutano a capire cosa richiede attenzione."
+        },
+        {
+            "title": "Controllo aziendale",
+            "text": "La board rispetta perimetro aziendale, ruolo, utente e piano abbonamento. Questo rende la gestione visuale più adatta a contesti professionali."
+        },
+        {
+            "title": "Integrazione con documenti e scadenze",
+            "text": "Le attività possono essere lette insieme a documenti, scadenze e criticità, riducendo il rischio di perdere informazioni importanti."
+        }
+    ],
+    "takeaway": "La Kanban Board aziendale è più efficace quando è integrata nel gestionale e collegata a ruoli, documenti, scadenze e controllo aziendale.",
+    "keywords": [
+        "Kanban Board aziendale",
+        "alternativa Trello PMI",
+        "Kanban Board stile Trello",
+        "lavagna Kanban integrata nei progetti",
+        "gestione visuale delle attività"
+    ]
+},
+  {
+    "slug": "pmi-gestionale-audit-scadenze-controllo-utenti",
+    "title": "Perché una PMI dovrebbe usare un gestionale con audit, scadenze e controllo utenti",
+    "description": "Audit aziendale, scadenze e controllo utenti aiutano le PMI a lavorare con più sicurezza, meno dispersione e maggiore controllo operativo.",
+    "date": "2026-05-15",
+    "readTime": "15 min",
+    "category": "Controllo aziendale",
+    "author": "Team Control Center",
+    "h1": "Perché una PMI dovrebbe usare un gestionale con audit, scadenze e controllo utenti",
+    "intro": "Le PMI spesso sottovalutano audit, scadenze e controllo utenti finché non nasce un problema: un account non disattivato, una password da cambiare, un documento scaduto, una richiesta ferma o un’attività bloccata. Un gestionale per PMI deve rendere queste criticità visibili.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "Una PMI dovrebbe usare un gestionale con audit, scadenze e controllo utenti perché queste funzioni riducono rischi operativi e rendono più chiaro chi ha fatto cosa, cosa è in ritardo e quali account richiedono attenzione."
+        },
+        {
+            "title": "Audit aziendale",
+            "text": "L’audit aziendale registra operazioni amministrative importanti: cambio ruolo, reset password, sospensione account, trasferimento assegnazioni e creazione template. Questo crea memoria operativa."
+        },
+        {
+            "title": "Scadenze e criticità",
+            "text": "Una vista unica su documenti in scadenza, attività Kanban in ritardo e richieste assenza pendenti aiuta il Company Admin a intervenire prima che la situazione peggiori."
+        },
+        {
+            "title": "Controllo utenti",
+            "text": "Sospendere, riattivare, resettare password e trasferire assegnazioni permette di mantenere continuità anche quando cambiano persone e responsabilità."
+        },
+        {
+            "title": "Starter, Team e Business",
+            "text": "Starter offre amministrazione base; Team aggiunge centro amministrativo operativo e gestione utenti avanzata; Business abilita audit completo e sicurezza avanzata."
+        }
+    ],
+    "takeaway": "Audit, scadenze e controllo utenti trasformano il gestionale da semplice archivio a strumento di governo operativo per PMI.",
+    "keywords": [
+        "audit aziendale software",
+        "gestionale per PMI",
+        "controllo utenti",
+        "scadenze aziendali",
+        "sicurezza software aziendale",
+        "centro amministrativo aziendale"
+    ]
+},
+  {
+    "slug": "software-cooperative-aziende-documenti-progetti-presenze-sicurezza",
+    "title": "Software per cooperative e aziende: gestione documenti, progetti, presenze e sicurezza",
+    "description": "Team Control Center come software per cooperative e aziende che devono gestire documenti, progetti, presenze, utenti, ruoli, scadenze e sicurezza.",
+    "date": "2026-05-15",
+    "readTime": "16 min",
+    "category": "Cooperative e aziende",
+    "author": "Team Control Center",
+    "h1": "Software per cooperative e aziende: gestione documenti, progetti, presenze e sicurezza",
+    "intro": "Cooperative e aziende operative lavorano spesso con personale distribuito, documenti amministrativi, presenze, richieste, progetti e scadenze. Senza un sistema unico, le informazioni si disperdono e il controllo diventa faticoso.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "Team Control Center è un software per cooperative e aziende che centralizza documenti, progetti, presenze, ruoli, scadenze, Kanban Board nei piani abilitati, sicurezza e report operativi."
+        },
+        {
+            "title": "Documenti aziendali",
+            "text": "La gestione documenti aziendali aiuta a mantenere file e informazioni vicino ai progetti e alle attività, riducendo cartelle sparse e versioni non aggiornate."
+        },
+        {
+            "title": "Presenze e richieste",
+            "text": "Presenze, ferie, permessi, malattie e richieste operative possono essere gestite in modo più strutturato rispetto a fogli e messaggi manuali."
+        },
+        {
+            "title": "Progetti e Kanban",
+            "text": "Il PM coordina progetti e attività sulla Kanban Board, mentre Lead e Viewer consultano stato e dettagli in sola lettura."
+        },
+        {
+            "title": "Sicurezza e perimetro dati",
+            "text": "Ogni azienda vede solo i propri dati. Le funzioni sono filtrate per azienda, ruolo, utente e piano, così la sicurezza resta coerente con l’organizzazione."
+        }
+    ],
+    "takeaway": "Per cooperative e aziende operative, un gestionale unico riduce dispersione e migliora il controllo su documenti, presenze, progetti e sicurezza.",
+    "keywords": [
+        "software per cooperative",
+        "gestione documenti aziendali",
+        "software presenze e progetti",
+        "gestione attività aziendali",
+        "sicurezza software aziendale"
+    ]
+},
+  {
+    "slug": "eliminare-excel-whatsapp-cartelle-sparse-gestione-team",
+    "title": "Come eliminare Excel, WhatsApp e cartelle sparse nella gestione del team",
+    "description": "Come passare da Excel, WhatsApp e cartelle sparse a un software gestione team aziendale con attività, presenze, documenti, ruoli, audit e Kanban.",
+    "date": "2026-05-15",
+    "readTime": "15 min",
+    "category": "Digitalizzazione operativa",
+    "author": "Team Control Center",
+    "h1": "Come eliminare Excel, WhatsApp e cartelle sparse nella gestione del team",
+    "intro": "Excel, WhatsApp e cartelle condivise possono sembrare sufficienti all’inizio. Poi aumentano persone, progetti e responsabilità, e ogni informazione diventa più difficile da trovare. Team Control Center nasce per ridurre questa dispersione.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "Per eliminare Excel, WhatsApp e cartelle sparse serve portare attività, presenze, documenti, progetti, notifiche, ruoli e scadenze in un unico software gestione team aziendale."
+        },
+        {
+            "title": "Il problema dei file Excel",
+            "text": "Un file Excel non gestisce davvero ruoli, audit, notifiche, scadenze e trasferimento assegnazioni. Può supportare calcoli, ma non sostituire un gestionale operativo."
+        },
+        {
+            "title": "Il problema delle chat",
+            "text": "WhatsApp è veloce, ma non è un sistema di controllo aziendale. Le decisioni restano nel flusso dei messaggi e diventano difficili da ritrovare."
+        },
+        {
+            "title": "Il problema delle cartelle sparse",
+            "text": "I documenti fuori contesto generano versioni duplicate e ricerche continue. Collegare documenti a progetti e attività rende il lavoro più leggibile."
+        },
+        {
+            "title": "Il passaggio corretto",
+            "text": "L’obiettivo non è cambiare tutto in un giorno, ma spostare progressivamente informazioni operative dentro Team Control Center: presenze, progetti, documenti, Kanban, scadenze e controllo utenti."
+        }
+    ],
+    "takeaway": "Eliminare Excel, WhatsApp e cartelle sparse significa trasformare informazioni informali in processi aziendali più chiari, sicuri e consultabili.",
+    "keywords": [
+        "alternativa Excel WhatsApp",
+        "software gestione team",
+        "gestione attività aziendali",
+        "gestionale documenti e attività",
+        "software presenze e progetti"
+    ]
+},
+  {
+    "slug": "demo-saas-aziendale-team-control-center-3-giorni",
+    "title": "Demo SaaS aziendale: come provare Team Control Center per 3 giorni",
+    "description": "Come funziona la demo SaaS aziendale di Team Control Center: azienda demo isolata, account e dati di esempio, durata 3 giorni ed eliminazione completa dei dati.",
+    "date": "2026-05-15",
+    "readTime": "13 min",
+    "category": "Demo e attivazione",
+    "author": "Team Control Center",
+    "h1": "Demo SaaS aziendale: come provare Team Control Center per 3 giorni",
+    "intro": "Una demo utile deve far capire come funziona davvero il prodotto. Per questo Team Control Center prevede una demo aziendale di 3 giorni con una vera azienda demo isolata, account e dati di esempio.",
+    "sections": [
+        {
+            "title": "Risposta breve",
+            "text": "La demo Team Control Center crea una vera azienda demo isolata con account e dati di esempio. Dura 3 giorni e poi viene eliminata completamente con tutti i dati associati."
+        },
+        {
+            "title": "Azienda demo isolata",
+            "text": "L’ambiente demo è separato dagli altri clienti e permette di provare funzioni, ruoli e dati senza contaminare ambienti reali."
+        },
+        {
+            "title": "Dati di esempio",
+            "text": "I dati di esempio aiutano a capire dashboard, progetti, utenti, ruoli, Kanban Board, documenti e scadenze senza dover configurare tutto da zero."
+        },
+        {
+            "title": "Durata 3 giorni",
+            "text": "La durata limitata rende la demo concreta e controllata. Alla scadenza l’account viene eliminato con tutti i dati associati."
+        },
+        {
+            "title": "Cosa valutare durante la demo",
+            "text": "Durante i 3 giorni conviene verificare ruoli, centro amministrativo, gestione utenti, Kanban, documenti, presenze, scadenze, piani e semplicità d’uso."
+        }
+    ],
+    "takeaway": "La demo aziendale di 3 giorni permette di provare Team Control Center in un ambiente isolato e temporaneo, ideale per PMI che vogliono vedere il flusso reale prima di scegliere un piano.",
+    "keywords": [
+        "demo SaaS aziendale",
+        "demo software gestionale",
+        "azienda demo 3 giorni",
+        "Team Control Center demo",
+        "gestionale per PMI"
+    ]
+},
   {
     "slug": "kanban-board-aziendale-gestire-progetti-attivita",
     "title": "Kanban Board aziendale: come gestire progetti e attività in modo semplice",
@@ -2749,3 +3301,383 @@ export const blogPosts = [
     ]
   }
 ];
+
+
+export const seoLandingPages = {
+  "/software-gestione-team-aziendale": {
+    "problem": "Molte PMI gestiscono persone, presenze, attività, progetti e documenti con strumenti separati: un file Excel per le presenze, una chat per le urgenze, una cartella per i documenti e un altro strumento per le attività. Questo crea ritardi, duplicazioni, responsabilità poco chiare e report difficili da ricostruire.",
+    "solution": "Team Control Center centralizza il lavoro operativo in un software gestione team aziendale pensato per PMI italiane: dashboard, profilo, presenze, progetti, Kanban Board nei piani abilitati, documenti, notifiche, ruoli, centro amministrativo, audit e sicurezza nello stesso ambiente.",
+    "bullets": [
+      "Dashboard aziendale",
+      "Presenze, scadenze e attività",
+      "Progetti con Kanban Board nei piani abilitati",
+      "Ruoli Company Admin, PM, Lead e Viewer",
+      "Centro amministrativo aziendale",
+      "Sicurezza e dati separati per azienda"
+    ],
+    "sections": [
+      {
+        "title": "Perché è una pagina chiave per la ricerca",
+        "text": "Chi cerca software gestione team aziendale non vuole solo una lista di task: cerca un modo per governare persone, responsabilità, attività, documenti e controllo. Per questo Team Control Center viene descritto come piattaforma SaaS per aziende italiane, con funzioni operative e amministrative in un unico contesto."
+      },
+      {
+        "title": "Controllo senza complicare il lavoro",
+        "text": "Il valore principale è dare più ordine senza introdurre una soluzione troppo pesante. Ogni ruolo vede ciò che serve, il Company Admin governa l’azienda, il PM coordina i progetti e Lead e Viewer consultano lo stato del lavoro in modo controllato."
+      },
+      {
+        "title": "Adatto a PMI, cooperative e team operativi",
+        "text": "La piattaforma è utile a realtà che vogliono superare Excel, WhatsApp e cartelle sparse, ma non vogliono adottare strumenti complessi pensati per grandi enterprise. Il tono del prodotto resta pratico: meno dispersione, più controllo e processi più leggibili."
+      }
+    ],
+    "cta": "Richiedi una demo per valutare Team Control Center come software gestione team aziendale."
+  },
+  "/kanban-board-aziendale": {
+    "problem": "Le attività aziendali diventano difficili da seguire quando vivono in chat, fogli di calcolo o strumenti non collegati ai progetti. Il responsabile non sa subito cosa è bloccato, cosa è in revisione e chi sta lavorando su una determinata attività.",
+    "solution": "La Kanban Board aziendale di Team Control Center è una lavagna Kanban integrata nei progetti, con colonne Backlog, Da fare, In corso, In revisione, Bloccato e Fatto. Il PM gestisce card, stati, priorità, scadenze, assegnatari e documenti; Lead e Viewer consultano in sola lettura.",
+    "bullets": [
+      "Backlog",
+      "Da fare",
+      "In corso",
+      "In revisione",
+      "Bloccato",
+      "Fatto",
+      "PM operativo",
+      "Lead e Viewer in sola lettura"
+    ],
+    "sections": [
+      {
+        "title": "Kanban Board stile Trello, ma integrata nel gestionale",
+        "text": "Team Control Center comunica una gestione visuale delle attività familiare e immediata, senza presentarsi come clone di altri strumenti. La differenza è l’integrazione con ruoli, progetti, documenti, presenze e sicurezza aziendale."
+      },
+      {
+        "title": "Perché è utile alle PMI",
+        "text": "Una PMI non ha bisogno soltanto di spostare card: ha bisogno di sapere chi può modificarle, chi può leggerle, quali attività sono in ritardo e quali documenti sono collegati al progetto."
+      },
+      {
+        "title": "Board sicura e perimetrata",
+        "text": "Ogni board resta nel perimetro dell’azienda. Le funzionalità disponibili dipendono dal piano e dal ruolo, così il controllo operativo non viene sacrificato alla semplicità visiva."
+      }
+    ],
+    "cta": "Scopri il piano Team per usare la Kanban Board progetto con ruolo PM."
+  },
+  "/software-presenze-progetti-documenti": {
+    "problem": "Presenze, progetti e documenti vengono spesso gestiti in ambienti diversi. Questo rende difficile collegare chi era disponibile, quale attività era aperta, quale documento serviva e quale scadenza era collegata al lavoro.",
+    "solution": "Team Control Center unifica software presenze e progetti, gestionale documenti e attività, notifiche, scadenze e report, creando un flusso più ordinato per responsabili, amministrazione e team operativi.",
+    "bullets": [
+      "Presenze e richieste",
+      "Progetti base e avanzati",
+      "Documenti collegati",
+      "Scadenze operative",
+      "Kanban nei piani abilitati",
+      "Report e export"
+    ],
+    "sections": [
+      {
+        "title": "Dal dato sparso al dato collegato",
+        "text": "Quando presenze e progetti non comunicano, il report finale richiede ricostruzioni manuali. Con un unico ambiente, il dato diventa più facile da consultare e più utile per prendere decisioni."
+      },
+      {
+        "title": "Documenti vicino al lavoro",
+        "text": "Un documento caricato nel contesto corretto evita ricerche in cartelle esterne e riduce la possibilità di usare file non aggiornati. Questo è particolarmente importante per cooperative, studi, agenzie e aziende operative."
+      },
+      {
+        "title": "Scadenze e criticità",
+        "text": "La vista sulle criticità aiuta a leggere documenti in scadenza, attività Kanban in ritardo e richieste assenza pendenti, evitando che le urgenze emergano quando è ormai tardi."
+      }
+    ],
+    "cta": "Valuta Team Control Center se vuoi collegare presenze, progetti e documenti in un unico gestionale."
+  },
+  "/software-per-pmi": {
+    "problem": "Le PMI hanno bisogno di strumenti concreti, non di piattaforme sovradimensionate. Il rischio è pagare software complessi che il team non usa oppure continuare con strumenti semplici ma non controllabili.",
+    "solution": "Team Control Center è un software gestionale per PMI che valorizza semplicità, controllo aziendale, sicurezza e gestione operativa: utenti, ruoli, progetti, Kanban, documenti, presenze, scadenze, audit e centro amministrativo.",
+    "bullets": [
+      "Centro amministrativo Company Admin",
+      "Gestione utenti avanzata",
+      "Piano e utilizzo",
+      "Audit e sicurezza",
+      "Template progetto",
+      "Demo aziendale 3 giorni"
+    ],
+    "sections": [
+      {
+        "title": "Una piattaforma SaaS per aziende italiane",
+        "text": "Il sito deve comunicare chiaramente che Team Control Center è una piattaforma SaaS per aziende italiane, pensata per chi cerca ordine operativo senza introdurre complessità inutile."
+      },
+      {
+        "title": "Piani pensati per crescere",
+        "text": "Starter consente di iniziare con funzioni base e amministrazione essenziale. Team abilita PM, Kanban, gestione utenti avanzata e template. Business aggiunge audit completo, sicurezza avanzata e controllo direzionale."
+      },
+      {
+        "title": "Valore per ricerca e AI",
+        "text": "Questa pagina aiuta motori di ricerca e assistenti AI a collegare Team Control Center a query come gestionale per PMI, software gestionale aziendale e software project management PMI."
+      }
+    ],
+    "cta": "Consulta i piani per scegliere il livello di controllo più adatto alla tua PMI."
+  },
+  "/alternativa-trello-pmi": {
+    "problem": "Molte PMI provano strumenti visuali per gestire attività, ma poi devono affiancare altri sistemi per utenti, documenti, presenze, ruoli, report e controllo aziendale.",
+    "solution": "Team Control Center offre una Kanban Board stile Trello integrata in un gestionale aziendale più ampio, con project management semplice per PMI, ruoli PM/Lead/Viewer, documenti progetto, sicurezza e piani abbonamento.",
+    "bullets": [
+      "Gestione visuale attività",
+      "Kanban integrata nei progetti",
+      "Ruoli e permessi",
+      "Documenti progetto",
+      "Centro amministrativo",
+      "Audit nel piano Business"
+    ],
+    "sections": [
+      {
+        "title": "Alternativa, non imitazione",
+        "text": "La comunicazione corretta non parla di clone, ma di alternativa semplice a Trello per PMI che cercano anche controllo aziendale, dati separati, ruoli e documenti nello stesso ambiente."
+      },
+      {
+        "title": "Quando scegliere Team Control Center",
+        "text": "È adatto quando la board non basta più e l’azienda vuole collegare attività, assegnatari, scadenze, documenti, notifiche e amministrazione in un sistema unico."
+      },
+      {
+        "title": "Perché la Kanban integrata è diversa",
+        "text": "Una lavagna collegata al progetto permette di mantenere contesto e responsabilità. Il PM può operare, mentre Lead e Viewer consultano senza modificare."
+      }
+    ],
+    "cta": "Leggi le funzionalità progetto e scopri la Kanban Board integrata."
+  },
+  "/alternativa-excel-whatsapp": {
+    "problem": "Excel e WhatsApp sono strumenti comodi, ma quando diventano il centro della gestione aziendale producono confusione: versioni diverse dei file, messaggi persi, decisioni non tracciate e responsabilità difficili da ricostruire.",
+    "solution": "Team Control Center porta attività, presenze, progetti, documenti, notifiche, ruoli e scadenze dentro una piattaforma SaaS aziendale, riducendo la dipendenza da chat informali e file locali.",
+    "bullets": [
+      "Meno file duplicati",
+      "Meno chat operative disperse",
+      "Più tracciabilità",
+      "Ruoli chiari",
+      "Documenti collegati",
+      "Report consultabili"
+    ],
+    "sections": [
+      {
+        "title": "Perché Excel non basta più",
+        "text": "Excel resta utile per analisi e calcoli, ma non è progettato per gestire permessi, assegnazioni, scadenze, notifiche, documenti e audit aziendale in modo integrato."
+      },
+      {
+        "title": "Perché WhatsApp non deve diventare un gestionale",
+        "text": "Una chat personale non offre controllo aziendale, storico strutturato, ruoli, audit e collegamento formale tra attività e documenti. Il rischio è perdere decisioni importanti nel flusso dei messaggi."
+      },
+      {
+        "title": "Il passaggio graduale",
+        "text": "Team Control Center non pretende di cancellare le abitudini aziendali in un giorno: aiuta a spostare le informazioni operative importanti dentro un sistema più ordinato e consultabile."
+      }
+    ],
+    "cta": "Richiedi una demo per vedere come ridurre Excel, WhatsApp e cartelle sparse."
+  },
+  "/faq": {
+    "problem": "Chi valuta un software gestionale vuole risposte rapide su funzioni, ruoli, sicurezza, piani, demo e limiti. Le FAQ aiutano sia gli utenti sia i motori di ricerca a capire meglio il prodotto.",
+    "solution": "La pagina FAQ raccoglie risposte chiare su Team Control Center, software gestione team aziendale, centro amministrativo, PM, Kanban Board, audit, demo aziendale 3 giorni e piani Starter, Team e Business.",
+    "bullets": [
+      "Domande su piani",
+      "Domande su ruoli",
+      "Domande su sicurezza",
+      "Domande su demo",
+      "Domande su Kanban",
+      "Domande su audit"
+    ],
+    "sections": [
+      {
+        "title": "FAQ pensate per SEO e AI",
+        "text": "Le domande sono scritte in modo naturale, con risposte chiare e citabili. Questo aumenta la leggibilità per utenti, motori di ricerca e assistenti AI."
+      },
+      {
+        "title": "Argomenti coperti",
+        "text": "La pagina copre gestione utenti, centro amministrativo, ruoli PM/Lead/Viewer, Kanban Board, piani, demo 3 giorni, sicurezza dei dati e audit aziendale."
+      }
+    ],
+    "cta": "Consulta le domande frequenti oppure richiedi una demo guidata."
+  },
+  "/centro-amministrativo-aziendale": {
+    "problem": "Quando l’azienda cresce, il Company Admin non può limitarsi a creare utenti. Ha bisogno di vedere stato del piano, utilizzo, ruoli, sicurezza, scadenze, criticità e azioni amministrative importanti.",
+    "solution": "Il nuovo centro amministrativo aziendale offre una sezione Amministrazione per controllare utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template progetto e criticità aziendali.",
+    "bullets": [
+      "Utenti e ruoli",
+      "Piano e utilizzo",
+      "Centro sicurezza",
+      "Audit aziendale",
+      "Template progetto",
+      "Scadenze e criticità"
+    ],
+    "sections": [
+      {
+        "title": "Company Admin come centro di controllo",
+        "text": "Il Company Admin governa il perimetro aziendale e può leggere informazioni fondamentali per evitare blocchi operativi: utenti sospesi, utenti inattivi, password da cambiare, attività in ritardo e documenti in scadenza."
+      },
+      {
+        "title": "Piano e utilizzo",
+        "text": "La vista piano e utilizzo mostra piano attivo, funzionalità abilitate, utenti utilizzati, progetti, documenti, storage e suggerimenti di upgrade. Questo aiuta a capire quando l’azienda sta crescendo oltre il piano corrente."
+      },
+      {
+        "title": "Centro sicurezza e audit",
+        "text": "Il centro sicurezza evidenzia criticità operative, mentre l’audit aziendale conserva lo storico di cambio ruolo, reset password, sospensione account, trasferimento assegnazioni, creazione template e altre azioni critiche."
+      }
+    ],
+    "cta": "Scopri il piano Team o Business per usare il centro amministrativo completo."
+  },
+  "/gestione-utenti-aziendali": {
+    "problem": "Gestire utenti aziendali senza strumenti adeguati porta ad account dimenticati, ruoli non aggiornati, password da resettare manualmente e assegnazioni bloccate quando una persona cambia mansione o lascia l’azienda.",
+    "solution": "Team Control Center consente al Company Admin di vedere gli utenti della propria azienda, filtrare per ruolo o stato, sospendere o riattivare account, resettare password temporanee, cambiare ruoli consentiti e trasferire assegnazioni.",
+    "bullets": [
+      "Filtro per ruolo e stato",
+      "Sospensione account",
+      "Riattivazione account",
+      "Reset password temporanea",
+      "Cambio ruolo",
+      "Trasferimento assegnazioni"
+    ],
+    "sections": [
+      {
+        "title": "Gestione utenti pensata per PMI",
+        "text": "La gestione utenti aziendali deve essere semplice, ma deve anche proteggere il perimetro dati. Per questo le azioni amministrative restano nel perimetro dell’azienda e vengono comunicate come funzioni di controllo, non come strumenti tecnici complessi."
+      },
+      {
+        "title": "Trasferimento assegnazioni",
+        "text": "Quando un utente cambia ruolo o non lavora più su un progetto, il Company Admin può trasferire assegnazioni da un utente a un altro. Questo evita attività orfane e riduce interruzioni operative."
+      },
+      {
+        "title": "Ruoli consentiti",
+        "text": "Il cambio ruolo deve rispettare i ruoli previsti dal piano e dal perimetro aziendale. Questo consente di dare responsabilità corrette senza aprire accessi non necessari."
+      }
+    ],
+    "cta": "Valuta il piano Team per gestione utenti avanzata e trasferimento assegnazioni."
+  },
+  "/audit-sicurezza-aziendale": {
+    "problem": "Senza audit e centro sicurezza, molte azioni critiche restano invisibili: chi ha cambiato un ruolo, chi ha sospeso un account, chi ha resettato una password o chi ha trasferito assegnazioni importanti.",
+    "solution": "Team Control Center introduce audit aziendale e centro sicurezza per monitorare utenti sospesi, inattivi, password da cambiare e storico delle operazioni amministrative sensibili.",
+    "bullets": [
+      "Audit cambio ruolo",
+      "Audit reset password",
+      "Audit sospensioni",
+      "Utenti inattivi",
+      "Password da cambiare",
+      "Storico azioni critiche"
+    ],
+    "sections": [
+      {
+        "title": "Audit come memoria amministrativa",
+        "text": "L’audit aziendale aiuta a ricostruire le operazioni importanti senza affidarsi alla memoria o a messaggi informali. È una funzione fondamentale per le aziende che vogliono controllo direzionale."
+      },
+      {
+        "title": "Sicurezza operativa",
+        "text": "Il centro sicurezza rende visibili utenti sospesi, utenti inattivi e password da cambiare. Queste informazioni aiutano il Company Admin a intervenire prima che una criticità diventi un problema."
+      },
+      {
+        "title": "Business per controllo avanzato",
+        "text": "Il piano Business è il riferimento per audit completo, sicurezza avanzata, storico modifiche, automazioni avanzate e maggiore controllo direzionale."
+      }
+    ],
+    "cta": "Approfondisci il piano Business se vuoi audit completo e sicurezza avanzata."
+  },
+  "/demo-aziendale-3-giorni": {
+    "problem": "Molti software fanno vedere solo schermate dimostrative o account generici. Per una PMI è più utile provare un ambiente reale, isolato e con dati di esempio, per capire come funzionano ruoli, progetti, utenti e flussi operativi.",
+    "solution": "La demo aziendale di Team Control Center crea una vera azienda demo isolata con account e dati di esempio. La demo dura 3 giorni e poi l’account viene eliminato completamente con tutti i dati associati.",
+    "bullets": [
+      "Azienda demo isolata",
+      "Account demo dedicato",
+      "Dati di esempio",
+      "Durata 3 giorni",
+      "Eliminazione completa",
+      "Prova concreta del flusso"
+    ],
+    "sections": [
+      {
+        "title": "Perché la demo è diversa",
+        "text": "La demo non è solo una presentazione commerciale: permette di provare un ambiente aziendale separato, utile per vedere come si muovono Company Admin, PM, Lead e Viewer."
+      },
+      {
+        "title": "Dati isolati e temporanei",
+        "text": "L’azienda demo non condivide dati con altre aziende e viene eliminata alla scadenza. Questo comunica sicurezza, pulizia e rispetto del perimetro informativo."
+      },
+      {
+        "title": "Ideale per valutare i piani",
+        "text": "Durante la demo è possibile capire quale piano è più adatto: Starter per iniziare, Team per PM e Kanban, Business per audit completo e controllo direzionale."
+      }
+    ],
+    "cta": "Richiedi la demo aziendale di 3 giorni per provare Team Control Center in modo concreto."
+  },
+  "/software-project-management-pmi": {
+    "problem": "Il project management nelle PMI deve essere immediato: se lo strumento è troppo complesso non viene usato, se è troppo semplice non offre controllo, ruoli, documenti e report.",
+    "solution": "Team Control Center unisce project management semplice per PMI, ruolo PM, Kanban Board, documenti progetto, Lead e Viewer in sola lettura, workload, activity feed e report operativi.",
+    "bullets": [
+      "Ruolo PM",
+      "Kanban Board",
+      "Lead e Viewer",
+      "Documenti progetto",
+      "Workload",
+      "Report base e avanzati"
+    ],
+    "sections": [
+      {
+        "title": "Project management semplice per PMI",
+        "text": "Il PM può coordinare attività senza dover amministrare tutta l’azienda. Questa separazione riduce confusione e permette al Company Admin di mantenere controllo su utenti, piani e sicurezza."
+      },
+      {
+        "title": "Progetti collegati ai dati aziendali",
+        "text": "Il progetto non resta isolato: attività, documenti, scadenze, assegnatari e notifiche vivono nello stesso sistema operativo."
+      },
+      {
+        "title": "Dal piano Team al Business",
+        "text": "Team è il piano consigliato per project management operativo. Business aggiunge audit completo, report avanzati, storico e funzioni di controllo direzionale."
+      }
+    ],
+    "cta": "Scopri il piano Team se cerchi un software project management PMI con Kanban e PM."
+  },
+  "/gestionale-ruoli-aziendali": {
+    "problem": "Senza ruoli chiari, ogni software aziendale rischia di diventare confuso: troppi permessi, dati visibili a persone sbagliate o responsabilità operative non definite.",
+    "solution": "Team Control Center distingue Company Admin, PM, Lead e Viewer, applicando filtri per azienda, ruolo, utente e piano abbonamento. Nessun utente vede dati di aziende diverse.",
+    "bullets": [
+      "Company Admin",
+      "PM / Project Manager",
+      "Lead",
+      "Viewer",
+      "Permessi per piano",
+      "Perimetro aziendale"
+    ],
+    "sections": [
+      {
+        "title": "Company Admin",
+        "text": "Il Company Admin controlla amministrazione, utenti, ruoli, piano, utilizzo, sicurezza, audit, template e criticità aziendali."
+      },
+      {
+        "title": "PM / Project Manager",
+        "text": "Il PM lavora nel perimetro della propria azienda, vede Dashboard, Progetti e Profilo e può associare Lead e Viewer a progetti e attività."
+      },
+      {
+        "title": "Lead e Viewer",
+        "text": "Lead e Viewer possono consultare la board in sola lettura, leggendo dettagli e stato senza creare, modificare o spostare attività."
+      }
+    ],
+    "cta": "Approfondisci i piani per capire quali ruoli sono disponibili per la tua azienda."
+  },
+  "/template-progetto-aziendale": {
+    "problem": "Molte aziende ripetono gli stessi passaggi per commesse, pratiche, onboarding clienti o lavori ricorrenti. Se ogni progetto viene creato da zero, aumentano dimenticanze e differenze operative.",
+    "solution": "Il Company Admin può creare template progetto con attività predefinite, utili per avviare più velocemente commesse, pratiche, onboarding clienti e processi ripetitivi.",
+    "bullets": [
+      "Attività predefinite",
+      "Commesse ricorrenti",
+      "Pratiche operative",
+      "Onboarding clienti",
+      "Standard aziendali",
+      "Avvio più veloce"
+    ],
+    "sections": [
+      {
+        "title": "Standardizzare senza irrigidire",
+        "text": "I template aiutano a partire da una base comune, ma ogni progetto può essere adattato al contesto reale. È un equilibrio utile per PMI che vogliono ordine senza burocrazia inutile."
+      },
+      {
+        "title": "Risparmio operativo",
+        "text": "Partire da attività predefinite riduce tempi di setup, errori e dimenticanze. Il team sa già quali passaggi devono essere seguiti."
+      },
+      {
+        "title": "Collegamento con Kanban e PM",
+        "text": "I template possono alimentare il lavoro del PM e della Kanban Board, trasformando processi ripetitivi in attività leggibili e assegnabili."
+      }
+    ],
+    "cta": "Usa i template progetto per rendere più veloce l’avvio delle attività ricorrenti."
+  }
+};
