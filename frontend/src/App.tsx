@@ -70,6 +70,7 @@ const legalNav = [
 const GOOGLE_ANALYTICS_ID = 'G-FZPVP3ECSZ';
 const COOKIE_CONSENT_KEY = 'tcc_cookie_consent_v1';
 const COOKIE_LEGACY_KEY = 'tcc_cookie_choice';
+const ANALYTICS_DEBUG_KEY = 'tcc_analytics_debug';
 
 const cookieCategories = [
   {
@@ -105,6 +106,7 @@ declare global {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
     tccOpenCookiePreferences?: () => void;
+    tccAnalyticsTest?: () => { measurementId: string; consent: CookieConsent | null; scriptLoaded: boolean; gtagType: string; debugMode: boolean };
   }
 }
 
@@ -170,14 +172,30 @@ function clearAnalyticsCookies() {
   ['_ga', '_gid', '_gat', `_ga_${GOOGLE_ANALYTICS_ID.replace('G-', '')}`, ...names].forEach(deleteCookieAcrossDomains);
 }
 
-function loadGoogleAnalytics() {
-  if (!GOOGLE_ANALYTICS_ID || document.querySelector(`script[data-tcc-analytics="${GOOGLE_ANALYTICS_ID}"]`)) {
-    return;
-  }
+function isAnalyticsDebugEnabled() {
+  const params = new URLSearchParams(window.location.search);
+  return localStorage.getItem(ANALYTICS_DEBUG_KEY) === 'true' || params.get('analytics_debug') === '1';
+}
 
+function ensureGtagBase() {
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag(...args: unknown[]){ window.dataLayer?.push(args); };
-  window.gtag('consent', 'default', {
+}
+
+function analyticsEventParams(params: Record<string, string | number | boolean> = {}) {
+  return {
+    send_to: GOOGLE_ANALYTICS_ID,
+    engagement_time_msec: 100,
+    ...params,
+    ...(isAnalyticsDebugEnabled() ? { debug_mode: true } : {})
+  };
+}
+
+function loadGoogleAnalytics() {
+  if (!GOOGLE_ANALYTICS_ID) return;
+
+  ensureGtagBase();
+  window.gtag?.('consent', 'default', {
     analytics_storage: 'granted',
     ad_storage: 'denied',
     ad_user_data: 'denied',
@@ -185,29 +203,70 @@ function loadGoogleAnalytics() {
     functionality_storage: 'granted',
     security_storage: 'granted'
   });
-  window.gtag('js', new Date());
-  window.gtag('config', GOOGLE_ANALYTICS_ID, {
+  window.gtag?.('js', new Date());
+  window.gtag?.('config', GOOGLE_ANALYTICS_ID, {
     anonymize_ip: true,
     send_page_view: false
   });
+
+  if (document.querySelector(`script[data-tcc-analytics="${GOOGLE_ANALYTICS_ID}"]`)) {
+    return;
+  }
 
   const script = document.createElement('script');
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
   script.dataset.tccAnalytics = GOOGLE_ANALYTICS_ID;
+  script.onload = () => {
+    window.gtag?.('event', 'tcc_analytics_loaded', analyticsEventParams({ event_category: 'analytics_debug' }));
+    if (isAnalyticsDebugEnabled()) {
+      console.info('[TCC Analytics] Google Analytics caricato correttamente:', GOOGLE_ANALYTICS_ID);
+    }
+  };
+  script.onerror = () => {
+    console.warn('[TCC Analytics] Google Analytics non è stato caricato. Possibile blocco da browser, adblock, rete o CSP.');
+  };
   document.head.appendChild(script);
+}
+
+function sendGoogleAnalyticsEvent(eventName: string, params: Record<string, string | number | boolean> = {}) {
+  loadGoogleAnalytics();
+  window.gtag?.('event', eventName, analyticsEventParams(params));
+}
+
+function runAnalyticsRealtimeTest() {
+  localStorage.setItem(ANALYTICS_DEBUG_KEY, 'true');
+  const consent = readCookieConsent();
+  if (!consent?.analytics) {
+    console.warn('[TCC Analytics] Consenso analytics non attivo. Clicca “Accetta analytics” o abilitalo dalle preferenze cookie.');
+  } else {
+    sendGoogleAnalyticsEvent('tcc_realtime_test', {
+      event_category: 'analytics_debug',
+      page_title: document.title,
+      page_path: window.location.pathname,
+      page_location: window.location.href
+    });
+    console.info('[TCC Analytics] Evento test inviato. Controlla GA4 > Realtime e GA4 > DebugView.', GOOGLE_ANALYTICS_ID);
+  }
+
+  return {
+    measurementId: GOOGLE_ANALYTICS_ID,
+    consent,
+    scriptLoaded: Boolean(document.querySelector(`script[data-tcc-analytics="${GOOGLE_ANALYTICS_ID}"]`)),
+    gtagType: typeof window.gtag,
+    debugMode: isAnalyticsDebugEnabled()
+  };
 }
 
 function applyCookieConsent(consent: CookieConsent, pathname = window.location.pathname) {
   if (consent.analytics) {
-    loadGoogleAnalytics();
-    window.gtag?.('consent', 'update', { analytics_storage: 'granted' });
-    window.gtag?.('event', 'page_view', {
+    sendGoogleAnalyticsEvent('page_view', {
       page_title: document.title,
       page_path: pathname,
       page_location: window.location.href
     });
   } else {
+    ensureGtagBase();
     window.gtag?.('consent', 'update', { analytics_storage: 'denied' });
     clearAnalyticsCookies();
   }
@@ -431,7 +490,7 @@ function FeaturePreview() {
 }
 
 function Features() {
-  const icons = [<Building2 />, <UsersRound />, <ShieldCheck />, <Clock3 />, <FileText />, <MessageSquareText />, <BarChart3 />, <Rocket />, <LockKeyhole />];
+  const icons = [<Building2 />, <UsersRound />, <ShieldCheck />, <Clock3 />, <FileText />, <Layers3 />, <BookOpenText />, <MessageSquareText />, <BarChart3 />, <Rocket />, <LockKeyhole />];
   return (
     <>
       <Hero page="features" />
@@ -973,6 +1032,13 @@ function Footer() {
 export default function App() {
   const [path, setPath] = useState(normalizedPath());
   const { page, post } = useMemo(() => resolveRoute(path), [path]);
+
+  useEffect(() => {
+    window.tccAnalyticsTest = runAnalyticsRealtimeTest;
+    return () => {
+      window.tccAnalyticsTest = undefined;
+    };
+  }, []);
 
   useEffect(() => { setMeta(page, post); }, [page, post]);
   useEffect(() => {

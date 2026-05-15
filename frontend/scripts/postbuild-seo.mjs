@@ -10,17 +10,21 @@ const baseUrl = (process.env.PUBLIC_SITE_URL || 'https://teamcontrolcenter.it').
 const today = new Date().toISOString().slice(0, 10);
 
 const strategicTopics = [
-  'software gestione team aziendale',
-  'gestionale presenze e progetti',
-  'software SaaS per PMI',
-  'gestionale aziendale per cooperative',
-  'software per gestione team e documenti',
-  'alternativa semplice a Excel per presenze e attività',
-  'gestione presenze dipendenti online',
-  'software gestione progetti team',
-  'chat aziendale interna',
-  'report aziendali operativi',
-  'ruoli e permessi SaaS'
+  "software gestione team aziendale",
+  "gestionale progetti",
+  "Kanban Board aziendale",
+  "alternativa a Trello per PMI",
+  "software presenze e progetti",
+  "gestionale documenti e attività",
+  "software per cooperative",
+  "gestione attività aziendali",
+  "project management per PMI",
+  "ruolo PM Project Manager",
+  "lavagna Kanban integrata nei progetti",
+  "tutorial primo accesso software aziendale",
+  "gestionale presenze e progetti",
+  "software SaaS per PMI",
+  "sicurezza ruoli e permessi SaaS"
 ];
 
 const targetAudiences = ['PMI italiane', 'agenzie', 'cooperative', 'scuole private', 'studi professionali', 'team operativi distribuiti'];
@@ -109,15 +113,22 @@ function softwareSchema(route) {
       { '@type': 'Offer', name: 'Business', price: '149.00', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: `${baseUrl}/prezzi` }
     ],
     featureList: [
-      'Gestione presenze dipendenti online',
-      'Gestione progetti e attività',
-      'Chat aziendale interna',
-      'Gestione documenti aziendali',
-      'Report operativi',
-      'Ruoli e permessi',
-      'Dashboard aziendale',
-      'SaaS responsive da browser'
-    ]
+      "Gestione presenze dipendenti online",
+      "Gestione progetti e attività",
+      "Kanban Board aziendale con colonne Backlog, Da fare, In corso, In revisione, Bloccato e Fatto",
+      "Ruolo PM / Project Manager",
+      "Assegnazione Lead e Viewer ai progetti",
+      "Lead e Viewer in sola lettura sulla board",
+      "Gestione documenti aziendali",
+      "Chat aziendale interna",
+      "Dashboard aziendale",
+      "Notifiche e activity feed",
+      "Workload operativo",
+      "Report operativi e avanzati",
+      "Audit log e storico nel piano Business",
+      "Tutorial primo accesso per ruolo",
+      "SaaS responsive da browser"
+]
   };
 }
 
@@ -226,7 +237,7 @@ function staticContent(route, post) {
     return `<main class="static-seo"><section><h1>${esc(route.title.replace(' | Team Control Center', ''))}</h1><p>${esc(route.description)}</p>${blogPosts.map((item) => `<article><h2><a href="/blog/${item.slug}">${esc(item.title)}</a></h2><p>${esc(item.description)}</p></article>`).join('')}</section></main>`;
   }
   if (route.path === '/prezzi') {
-    return `<main class="static-seo"><section><h1>${esc(route.title.replace(' | Piani SaaS per aziende e team', ''))}</h1><p>${esc(route.description)}</p><h2>Piani disponibili</h2><ul><li>Starter 29€ al mese fino a 5 utenti</li><li>Team 79€ al mese fino a 20 utenti</li><li>Business 149€ al mese fino a 50 utenti</li></ul><p><a href="/demo">Richiedi demo</a></p></section></main>`;
+    return `<main class="static-seo"><section><h1>${esc(route.title.replace(' | Piani SaaS per aziende e team', ''))}</h1><p>${esc(route.description)}</p><h2>Piani disponibili</h2><ul><li>Starter 29€ al mese fino a 5 utenti: Dashboard, Profilo, Progetti base, ricerca limitata, notifiche base, scadenziario base, export base e tutorial primo accesso. Non include Kanban Board.</li><li>Team 79€ al mese fino a 20 utenti: include Kanban Board progetto, ruolo PM, assegnazione Lead/Viewer, activity feed, workload, export operativo e automazioni base. È il piano consigliato.</li><li>Business 149€ al mese fino a 50 utenti: include tutto il Team più audit log, report avanzati, Kanban avanzata, storico, automazioni avanzate, export storico e funzioni di controllo.</li></ul><p><a href="/demo">Richiedi demo</a></p></section></main>`;
   }
   if (route.type === 'legal') {
     return legalStatic(route);
@@ -276,9 +287,9 @@ function llmsText() {
     '',
     'Pubblico principale: PMI italiane, agenzie, cooperative, scuole private, studi professionali e team operativi distribuiti.',
     '',
-    'Problemi risolti: riduzione di Excel per presenze e attività, meno messaggi sparsi, documenti più ordinati, progetti più leggibili, ruoli chiari, report consultabili.',
+    'Problemi risolti: riduzione di Excel e WhatsApp per presenze e attività, gestione visuale dei progetti con Kanban Board, documenti più ordinati, ruoli PM/Lead/Viewer chiari, dati separati per azienda, report consultabili.',
     '',
-    'Funzionalità: presenze, ferie, permessi, malattie, straordinari, progetti, attività, documenti, chat aziendale, dashboard, report, ruoli e permessi.',
+    'Funzionalità: presenze, ferie, permessi, malattie, straordinari, progetti, Kanban Board aziendale, ruolo PM / Project Manager, assegnazione Lead/Viewer, attività, documenti, chat aziendale, dashboard, notifiche, report, tutorial primo accesso, ruoli e permessi.',
     '',
     'Keyword strategiche: ' + strategicTopics.join(', '),
     '',
