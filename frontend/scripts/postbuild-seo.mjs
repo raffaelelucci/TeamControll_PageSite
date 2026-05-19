@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { routes, blogPosts, seoLandingPages } from './seo-data.mjs';
+import { englishRoutes, englishLandingPages, englishBlogPosts } from './seo-en-data.mjs';
 import { legalPages } from './legal-data.mjs';
 
 const dist = path.resolve('dist');
@@ -83,6 +84,53 @@ function json(data) {
 function canonical(pathname) {
   return `${baseUrl}${pathname === '/' ? '/' : pathname}`;
 }
+function englishEquivalent(pathname) {
+  const mapped = {
+    '/': '/en',
+    '/funzionalita': '/en/features',
+    '/prezzi': '/en/pricing',
+    '/demo': '/en/demo',
+    '/contatti': '/en/contact',
+    '/blog': '/en/blog',
+    '/centro-amministrativo-aziendale': '/en/administration-center',
+    '/software-gestione-team-aziendale': '/en/team-management-software',
+    '/kanban-board-aziendale': '/en/kanban-board',
+    '/software-per-pmi': '/en/software-for-smes',
+    '/alternativa-excel-whatsapp': '/en/alternative-to-excel-whatsapp',
+    '/software-project-management-pmi': '/en/project-management-software-smes',
+    '/demo-aziendale-3-giorni': '/en/business-demo-3-days'
+  };
+  if (pathname.startsWith('/blog/')) return '/en/blog';
+  return mapped[pathname] || null;
+}
+
+function italianEquivalent(pathname) {
+  const mapped = {
+    '/en': '/',
+    '/en/features': '/funzionalita',
+    '/en/pricing': '/prezzi',
+    '/en/demo': '/demo',
+    '/en/contact': '/contatti',
+    '/en/blog': '/blog',
+    '/en/administration-center': '/centro-amministrativo-aziendale',
+    '/en/team-management-software': '/software-gestione-team-aziendale',
+    '/en/kanban-board': '/kanban-board-aziendale',
+    '/en/software-for-smes': '/software-per-pmi',
+    '/en/alternative-to-excel-whatsapp': '/alternativa-excel-whatsapp',
+    '/en/project-management-software-smes': '/software-project-management-pmi',
+    '/en/business-demo-3-days': '/demo-aziendale-3-giorni'
+  };
+  if (pathname.startsWith('/en/blog/')) return '/blog';
+  return mapped[pathname] || '/';
+}
+
+function hreflangTags(pathname, lang = 'it') {
+  const itPath = lang === 'it' ? pathname : italianEquivalent(pathname);
+  const enPath = lang === 'en' ? pathname : englishEquivalent(pathname);
+  if (!enPath) return '';
+  return `\n<link rel="alternate" hreflang="it-IT" href="${canonical(itPath)}" />\n<link rel="alternate" hreflang="en" href="${canonical(enPath)}" />\n<link rel="alternate" hreflang="x-default" href="${canonical(itPath)}" />`;
+}
+
 
 function breadcrumbs(pathname, title) {
   const items = [{ '@type': 'ListItem', position: 1, name: 'Home', item: `${baseUrl}/` }];
@@ -279,8 +327,63 @@ function inject(html, route, post = null) {
     .replace(/<meta property="og:url" content=".*?" \/>/, `<meta property="og:url" content="${canonical(pagePath)}" />`)
     .replace(/<meta name="twitter:title" content=".*?" \/>/, `<meta name="twitter:title" content="${esc(title)}" />`)
     .replace(/<meta name="twitter:description" content=".*?" \/>/, `<meta name="twitter:description" content="${esc(description)}" />`)
-    .replace('</head>', `${canonicalTag}\n${preload}\n${scripts}\n</head>`)
+    .replace('</head>', `${canonicalTag}${hreflangTags(pagePath, 'it')}\n${preload}\n${scripts}\n</head>`)
     .replace('<div id="root"></div>', `<div id="root">${staticContent(route, post)}</div>`);
+}
+
+
+function englishStaticContent(route, post) {
+  if (post) {
+    const body = post.sections.map((section) => `<section><h2>${esc(section.title)}</h2><p>${esc(section.text)}</p></section>`).join('');
+    return `<main class="static-seo"><article><p>${esc(post.category)}</p><h1>${esc(post.title)}</h1><p>${esc(post.intro || post.description)}</p>${body}<section><h2>In summary</h2><p>${esc(post.takeaway)}</p></section><p><a href="/en/demo">Request a demo</a> or <a href="/en/pricing">view pricing</a>.</p></article></main>`;
+  }
+  if (route.path === '/en/blog') {
+    return `<main class="static-seo"><section><h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p>${englishBlogPosts.map((item) => `<article><h2><a href="/en/blog/${item.slug}">${esc(item.title)}</a></h2><p>${esc(item.description)}</p></article>`).join('')}</section></main>`;
+  }
+  const landing = englishLandingPages[route.path];
+  if (landing) {
+    return `<main class="static-seo"><article><p>${esc(route.kicker)}</p><h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p><section><h2>Problem solved</h2><p>${esc(landing.problem)}</p></section><section><h2>How Team Control Center helps</h2><p>${esc(landing.solution)}</p></section><section><h2>Main capabilities</h2><ul>${landing.bullets.map((item) => `<li>${esc(item)}</li>`).join('')}</ul></section>${landing.sections.map((section) => `<section><h2>${esc(section.title)}</h2><p>${esc(section.text)}</p></section>`).join('')}<section><h2>In summary</h2><p>${esc(landing.cta)}</p></section><p><a href="/en/demo">Request a demo</a> or <a href="/en/pricing">view pricing</a>.</p></article></main>`;
+  }
+  if (route.path === '/en/pricing') {
+    return `<main class="static-seo"><section><h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p><h2>Available plans</h2><ul><li>Starter 29€ per month: dashboard, profile, basic projects, first-login tutorial and basic company administration.</li><li>Team 79€ per month: PM role, project Kanban Board, Lead/Viewer assignment, advanced user management and project templates.</li><li>Business 149€ per month: complete audit, advanced security, advanced reports, change history and stronger management control.</li></ul><p><a href="/en/demo">Request a demo</a></p></section></main>`;
+  }
+  return `<main class="static-seo"><section><h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p><h2>Team management, projects, documents and Kanban for SMEs</h2><p>Team Control Center helps SMEs centralize company operations in one SaaS platform with profiled roles, secure data boundaries and modern visual workflows.</p><p><a href="/en/features">Explore features</a> · <a href="/en/pricing">View pricing</a> · <a href="/en/blog">Read the blog</a></p></section></main>`;
+}
+
+function englishSchemaBundle(route, post) {
+  const pagePath = post ? `/en/blog/${post.slug}` : route.path;
+  const pageTitle = post ? post.title : route.title;
+  const common = [
+    { ...organization, description: 'Team Control Center develops a SaaS platform for team management, projects, documents, attendance, roles, audit and operational control for SMEs.', areaServed: { '@type': 'Place', name: 'Europe' } },
+    { ...website, url: baseUrl, inLanguage: 'en', description: englishRoutes.home.description },
+    breadcrumbs(pagePath, pageTitle)
+  ];
+  if (post) return [...common, { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description: post.description, datePublished: post.date, dateModified: today, author: { '@type': 'Organization', name: 'Team Control Center', url: baseUrl }, publisher: { '@type': 'Organization', name: 'Team Control Center', logo: { '@type': 'ImageObject', url: `${baseUrl}/logo.svg` } }, image: `${baseUrl}/og-cover.png`, mainEntityOfPage: canonical(pagePath), inLanguage: 'en', articleSection: post.category, keywords: post.keywords.join(', ') }];
+  return [...common, { '@context': 'https://schema.org', '@type': 'WebPage', name: route.title, description: route.description, url: canonical(route.path), inLanguage: 'en' }, softwareSchema(route), faqSchema()];
+}
+
+function injectEnglish(html, route, post = null) {
+  const pagePath = post ? `/en/blog/${post.slug}` : route.path;
+  const title = post ? `${post.title} | Team Control Center` : route.title;
+  const description = post ? post.description : route.description;
+  const keywords = (post ? post.keywords : route.keywords || []).join(', ');
+  const type = post ? 'article' : 'website';
+  const scripts = englishSchemaBundle(route, post).map((item) => `<script type="application/ld+json">${json(item)}</script>`).join('\n');
+  const canonicalTag = `<link rel="canonical" href="${canonical(pagePath)}" />`;
+  const preload = `<link rel="preload" as="image" href="/og-cover.png" />`;
+  return html
+    .replace(/<html lang=".*?">/, '<html lang="en">')
+    .replace(/<title>.*?<\/title>/, `<title>${esc(title)}</title>`)
+    .replace(/<meta name="description" content=".*?" \/>/, `<meta name="description" content="${esc(description)}" />`)
+    .replace(/<meta name="keywords" content=".*?" \/>/, `<meta name="keywords" content="${esc(keywords)}" />`)
+    .replace(/<meta property="og:type" content=".*?" \/>/, `<meta property="og:type" content="${type}" />`)
+    .replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${esc(title)}" />`)
+    .replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${esc(description)}" />`)
+    .replace(/<meta property="og:url" content=".*?" \/>/, `<meta property="og:url" content="${canonical(pagePath)}" />`)
+    .replace(/<meta name="twitter:title" content=".*?" \/>/, `<meta name="twitter:title" content="${esc(title)}" />`)
+    .replace(/<meta name="twitter:description" content=".*?" \/>/, `<meta name="twitter:description" content="${esc(description)}" />`)
+    .replace('</head>', `${canonicalTag}${hreflangTags(pagePath, 'en')}\n${preload}\n${scripts}\n</head>`)
+    .replace('<div id="root"></div>', `<div id="root">${englishStaticContent(route, post)}</div>`);
 }
 
 function llmsText() {
@@ -307,6 +410,13 @@ function llmsText() {
     `- Contatti: ${baseUrl}/contatti — modulo Contattaci con nome, cognome, email, azienda, oggetto, messaggio e allegati opzionali per richieste commerciali o documentali.`,
     `- Blog: ${baseUrl}/blog`,
     '',
+    'English / international URLs:',
+    `- English home: ${baseUrl}/en`,
+    `- Features: ${baseUrl}/en/features`,
+    `- Pricing: ${baseUrl}/en/pricing`,
+    `- Contact: ${baseUrl}/en/contact`,
+    `- Blog: ${baseUrl}/en/blog`,
+    '',
     'Articoli utili per comprendere il prodotto:'
   ];
   blogPosts.forEach((post) => lines.push(`- ${post.title}: ${baseUrl}/blog/${post.slug} — ${post.description}`));
@@ -323,6 +433,16 @@ for (const page of pages) {
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'index.html'), inject(index, page.route, page.post));
   urls.push({ loc: canonical(pathname), priority: pathname === '/' ? '1.0' : pathname === '/blog' ? '0.9' : '0.8', changefreq: pathname.startsWith('/blog/') ? 'monthly' : 'weekly' });
+}
+
+const englishPages = Object.values(englishRoutes).map((route) => ({ route })).concat(englishBlogPosts.map((post) => ({ route: englishRoutes.blog, post })));
+
+for (const page of englishPages) {
+  const pathname = page.post ? `/en/blog/${page.post.slug}` : page.route.path;
+  const outDir = path.join(dist, pathname.replace(/^\//, ''));
+  fs.mkdirSync(outDir, { recursive: true });
+  fs.writeFileSync(path.join(outDir, 'index.html'), injectEnglish(index, page.route, page.post));
+  urls.push({ loc: canonical(pathname), priority: pathname === '/en' ? '0.9' : pathname === '/en/blog' ? '0.8' : '0.7', changefreq: pathname.startsWith('/en/blog/') ? 'monthly' : 'weekly' });
 }
 
 fs.writeFileSync(path.join(dist, 'robots.txt'), `User-agent: *
