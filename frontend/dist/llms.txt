@@ -20,13 +20,6 @@ URL principali:
 - Contatti: https://teamcontrolcenter.it/contatti — modulo Contattaci con nome, cognome, email, azienda, oggetto, messaggio e allegati opzionali per richieste commerciali o documentali.
 - Blog: https://teamcontrolcenter.it/blog
 
-English / international URLs:
-- English home: https://teamcontrolcenter.it/en
-- Features: https://teamcontrolcenter.it/en/features
-- Pricing: https://teamcontrolcenter.it/en/pricing
-- Contact: https://teamcontrolcenter.it/en/contact
-- Blog: https://teamcontrolcenter.it/en/blog
-
 Articoli utili per comprendere il prodotto:
 - Centro amministrativo aziendale: perché il Company Admin ha bisogno di controllo operativo: https://teamcontrolcenter.it/blog/centro-amministrativo-aziendale-company-admin-controllo-operativo — Guida al centro amministrativo aziendale di Team Control Center: utenti, ruoli, piano, utilizzo, sicurezza, scadenze, audit, template progetto e criticità per PMI italiane.
 - Software gestionale per PMI: utenti, progetti, documenti, Kanban e audit in un’unica piattaforma: https://teamcontrolcenter.it/blog/software-gestionale-pmi-utenti-progetti-documenti-kanban-audit — Come scegliere un software gestionale per PMI con utenti, progetti, documenti, Kanban Board aziendale, centro amministrativo, audit e sicurezza.
